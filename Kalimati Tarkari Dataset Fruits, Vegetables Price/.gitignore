@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Models (too large for GitHub)
+models/*.pkl
+models/*.h5
+!models/feature_metadata.json
+!models/model_registry.json
+
+# Data files (if needed, use Git LFS)
+Dataset/*.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dashboard
+dashboard/node_modules/
+dashboard/.next/
+dashboard/out/
+dashboard/build/
+dashboard/dist/
+dashboard/.env.local
+dashboard/.env.*.local

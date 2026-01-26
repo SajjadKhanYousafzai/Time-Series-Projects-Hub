@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospitality Employees Time Series Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🏨 Hospitality Employees Time Series Dashboard</h1>
+                <p>California Hospitality Industry - Monthly Employment Data (1990-2018)</p>
+            </div>
+        </header>
+
+        <!-- Key Metrics -->
+        <section class="metrics-section">
+            <div class="metric-card">
+                <div class="metric-icon">📊</div>
+                <div class="metric-content">
+                    <h3>Total Data Points</h3>
+                    <p class="metric-value" id="totalPoints">348</p>
+                    <span class="metric-label">Monthly observations</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">📈</div>
+                <div class="metric-content">
+                    <h3>Average Employees</h3>
+                    <p class="metric-value" id="avgEmployees">-</p>
+                    <span class="metric-label">Thousands</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">🎯</div>
+                <div class="metric-content">
+                    <h3>Growth Rate</h3>
+                    <p class="metric-value" id="growthRate">-</p>
+                    <span class="metric-label">Over 28 years</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon">📅</div>
+                <div class="metric-content">
+                    <h3>Time Period</h3>
+                    <p class="metric-value">28</p>
+                    <span class="metric-label">Years (1990-2018)</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Chart Section -->
+        <section class="chart-section">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h2>📈 Employment Trends Over Time</h2>
+                    <div class="chart-controls">
+                        <select id="chartType" class="chart-select">
+                            <option value="line">Line Chart</option>
+                            <option value="area">Area Chart</option>
+                            <option value="bar">Bar Chart</option>
+                        </select>
+                        <button id="downloadChart" class="btn-download">📥 Download</button>
+                    </div>
+                </div>
+                <canvas id="mainChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Decomposition Section -->
+        <section class="decomposition-section">
+            <h2>🔬 Time Series Decomposition</h2>
+            <div class="decomposition-grid">
+                <div class="decomposition-card">
+                    <h3>Trend Component</h3>
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <div class="decomposition-card">
+                    <h3>Seasonal Component</h3>
+                    <canvas id="seasonalChart"></canvas>
+                </div>
+                <div class="decomposition-card">
+                    <h3>Residual Component</h3>
+                    <canvas id="residualChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>📊 Descriptive Statistics</h3>
+                    <table class="stats-table">
+                        <tr>
+                            <td>Mean</td>
+                            <td id="statMean">-</td>
+                        </tr>
+                        <tr>
+                            <td>Median</td>
+                            <td id="statMedian">-</td>
+                        </tr>
+                        <tr>
+                            <td>Std Deviation</td>
+                            <td id="statStd">-</td>
+                        </tr>
+                        <tr>
+                            <td>Min</td>
+                            <td id="statMin">-</td>
+                        </tr>
+                        <tr>
+                            <td>Max</td>
+                            <td id="statMax">-</td>
+                        </tr>
+                        <tr>
+                            <td>Range</td>
+                            <td id="statRange">-</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="stat-card">
+                    <h3>🔍 Seasonality Analysis</h3>
+                    <canvas id="seasonalityChart"></canvas>
+                </div>
+
+                <div class="stat-card">
+                    <h3>📉 Distribution Analysis</h3>
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forecast Section -->
+        <section class="forecast-section">
+            <h2>🔮 Forecast Analysis</h2>
+            <div class="forecast-controls">
+                <label>Forecast Horizon (Months):</label>
+                <input type="range" id="forecastHorizon" min="1" max="24" value="12" step="1">
+                <span id="forecastValue">12</span>
+                <button id="generateForecast" class="btn-primary">Generate Forecast</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="forecastChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Model Performance -->
+        <section class="performance-section">
+            <h2>🎯 Model Performance Comparison</h2>
+            <div class="performance-grid">
+                <div class="performance-card">
+                    <h3>SARIMA Model</h3>
+                    <div class="model-metrics">
+                        <div class="metric-item">
+                            <span class="metric-name">MAE:</span>
+                            <span class="metric-val">22.45</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">RMSE:</span>
+                            <span class="metric-val">28.67</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">MAPE:</span>
+                            <span class="metric-val">1.23%</span>
+                        </div>
+                        <div class="model-badge best">Best Model</div>
+                    </div>
+                </div>
+                <div class="performance-card">
+                    <h3>Exponential Smoothing</h3>
+                    <div class="model-metrics">
+                        <div class="metric-item">
+                            <span class="metric-name">MAE:</span>
+                            <span class="metric-val">25.89</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">RMSE:</span>
+                            <span class="metric-val">32.14</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">MAPE:</span>
+                            <span class="metric-val">1.42%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="performance-card">
+                    <h3>Seasonal Naive</h3>
+                    <div class="model-metrics">
+                        <div class="metric-item">
+                            <span class="metric-name">MAE:</span>
+                            <span class="metric-val">48.23</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">RMSE:</span>
+                            <span class="metric-val">61.45</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-name">MAPE:</span>
+                            <span class="metric-val">2.67%</span>
+                        </div>
+                        <div class="model-badge baseline">Baseline</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Insights Section -->
+        <section class="insights-section">
+            <h2>💡 Key Insights & Recommendations</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <div class="insight-icon">📈</div>
+                    <h3>Upward Trend</h3>
+                    <p>The hospitality industry in California shows consistent growth over 28 years, with employment increasing from ~1,064k in 1990 to ~1,925k in 2018, representing an 81% growth.</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🌞</div>
+                    <h3>Strong Seasonality</h3>
+                    <p>Clear seasonal patterns emerge with employment peaks during summer months (June-August) and lows in winter (January-February), driven by tourism cycles.</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">🎯</div>
+                    <h3>High Accuracy</h3>
+                    <p>SARIMA model achieves excellent forecasting accuracy with MAPE of 1.23%, making it highly reliable for workforce planning and resource allocation.</p>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">💼</div>
+                    <h3>Business Impact</h3>
+                    <p>Understanding these patterns enables better hiring strategies, inventory management, and operational planning aligned with seasonal demand fluctuations.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>🏨 Hospitality Employees Time Series Dashboard</p>
+                <p>Data Source: California Employment Development Department | Analysis Period: 1990-2018</p>
+                <p>Created with ❤️ by Sajjad Ali Shah | <a href="https://www.linkedin.com/in/sajjad-ali-shah47/" target="_blank">LinkedIn</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

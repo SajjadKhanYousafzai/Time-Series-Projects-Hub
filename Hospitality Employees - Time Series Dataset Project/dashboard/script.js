@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load CSV data
 async function loadData() {
     try {
-        const response = await fetch('../Dataset/HospitalityEmployees.csv');
+        const response = await fetch('HospitalityEmployees.csv');
         const text = await response.text();
         
         const lines = text.trim().split('\n');

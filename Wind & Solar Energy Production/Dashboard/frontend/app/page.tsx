@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Wind, Sun, Activity, Zap } from 'lucide-react';
+import { Wind, Sun, Activity, Zap, BarChart3 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Dashboard() {
   const [metrics, setMetrics] = useState<any>(null);
@@ -70,11 +71,22 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-slate-50 p-6 font-sans text-slate-900">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
-          <Zap className="h-8 w-8 text-yellow-500" />
-          Energy Production Dashboard
-        </h1>
-        <p className="text-slate-500 mt-2">Real-time analysis and forecasting of Wind & Solar energy production.</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
+              <Zap className="h-8 w-8 text-yellow-500" />
+              Energy Production Dashboard
+            </h1>
+            <p className="text-slate-500 mt-2">Real-time analysis and forecasting of Wind & Solar energy production.</p>
+          </div>
+          <Link 
+            href="/models-comparison" 
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+          >
+            <BarChart3 className="h-5 w-5" />
+            Compare ML Models
+          </Link>
+        </div>
       </header>
 
       {/* Metrics Cards */}

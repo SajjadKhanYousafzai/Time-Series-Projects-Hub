@@ -1,0 +1,107 @@
+{
+  "model_name": "Random Forest",
+  "r2_score": 0.9765,
+  "rmse": 3476.0,
+  "mae": 1783.0,
+  "feature_names": [
+    "class",
+    "duration",
+    "days_left",
+    "stops_numeric",
+    "is_direct",
+    "airline_Air_India",
+    "airline_GO_FIRST",
+    "airline_Indigo",
+    "airline_SpiceJet",
+    "airline_Vistara",
+    "source_city_Chennai",
+    "source_city_Delhi",
+    "source_city_Hyderabad",
+    "source_city_Kolkata",
+    "source_city_Mumbai",
+    "destination_city_Chennai",
+    "destination_city_Delhi",
+    "destination_city_Hyderabad",
+    "destination_city_Kolkata",
+    "destination_city_Mumbai",
+    "departure_time_Early_Morning",
+    "departure_time_Evening",
+    "departure_time_Late_Night",
+    "departure_time_Morning",
+    "departure_time_Night",
+    "arrival_time_Early_Morning",
+    "arrival_time_Evening",
+    "arrival_time_Late_Night",
+    "arrival_time_Morning",
+    "arrival_time_Night"
+  ],
+  "scale_cols": [
+    "duration",
+    "days_left",
+    "stops_numeric"
+  ],
+  "stops_map": {
+    "zero": 0,
+    "one": 1,
+    "two_or_more": 2
+  },
+  "categories": {
+    "airline": [
+      "AirAsia",
+      "Air_India",
+      "GO_FIRST",
+      "Indigo",
+      "SpiceJet",
+      "Vistara"
+    ],
+    "source_city": [
+      "Bangalore",
+      "Chennai",
+      "Delhi",
+      "Hyderabad",
+      "Kolkata",
+      "Mumbai"
+    ],
+    "destination_city": [
+      "Bangalore",
+      "Chennai",
+      "Delhi",
+      "Hyderabad",
+      "Kolkata",
+      "Mumbai"
+    ],
+    "departure_time": [
+      "Early_Morning",
+      "Morning",
+      "Afternoon",
+      "Evening",
+      "Night",
+      "Late_Night"
+    ],
+    "arrival_time": [
+      "Early_Morning",
+      "Morning",
+      "Afternoon",
+      "Evening",
+      "Night",
+      "Late_Night"
+    ],
+    "stops": [
+      "zero",
+      "one",
+      "two_or_more"
+    ],
+    "class_type": [
+      "Economy",
+      "Business"
+    ]
+  },
+  "duration_range": {
+    "min": 0.83,
+    "max": 49.83
+  },
+  "days_left_range": {
+    "min": 1,
+    "max": 49
+  }
+}

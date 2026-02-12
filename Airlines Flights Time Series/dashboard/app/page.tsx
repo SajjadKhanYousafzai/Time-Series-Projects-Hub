@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
 interface Metadata {
   categories: {
@@ -40,13 +40,21 @@ const TIME_LABELS: Record<string, string> = {
   Late_Night: "Late Night",
 };
 
+const AIRLINE_LABELS: Record<string, string> = {
+  AirAsia: "AirAsia",
+  Air_India: "Air India",
+  GO_FIRST: "Go First",
+  Indigo: "IndiGo",
+  SpiceJet: "SpiceJet",
+  Vistara: "Vistara",
+};
+
 export default function Home() {
   const [meta, setMeta] = useState<Metadata | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state
   const [airline, setAirline] = useState("");
   const [sourceCity, setSourceCity] = useState("");
   const [destCity, setDestCity] = useState("");
@@ -62,7 +70,6 @@ export default function Home() {
       .then((r) => r.json())
       .then((data: Metadata) => {
         setMeta(data);
-        // Set defaults
         setAirline(data.categories.airline[0]);
         setSourceCity(data.categories.source_city[0]);
         setDestCity(data.categories.destination_city[1] || data.categories.destination_city[0]);
@@ -71,14 +78,13 @@ export default function Home() {
         setStops(data.categories.stops[1]);
         setClassType(data.categories.class_type[0]);
       })
-      .catch(() => setError("Cannot connect to API. Is the backend running on port 8000?"));
+      .catch(() => setError("Cannot connect to API. Is the backend running?"));
   }, []);
 
   const handlePredict = async () => {
     setLoading(true);
     setResult(null);
     setError(null);
-
     try {
       const res = await fetch(`${API_BASE}/predict`, {
         method: "POST",
@@ -95,12 +101,10 @@ export default function Home() {
           days_left: daysLeft,
         }),
       });
-
       if (!res.ok) {
         const errData = await res.json();
         throw new Error(errData.detail || "Prediction failed");
       }
-
       const data: PredictionResult = await res.json();
       setResult(data);
     } catch (err) {
@@ -115,63 +119,103 @@ export default function Home() {
   return (
     <>
       <div className="bg-mesh" />
-      <main className="relative z-10 min-h-screen py-8 px-4">
-        <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <header className="text-center mb-10">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="text-blue-400">
-                <path
-                  d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
-                  fill="currentColor"
-                />
-              </svg>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 10,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          minHeight: "100vh",
+          padding: "2rem 1rem",
+        }}
+      >
+        {/* ── HEADER ── */}
+        <header style={{ textAlign: "center", marginBottom: "2rem", width: "100%", maxWidth: "900px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.6rem", marginBottom: "0.4rem" }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ color: "var(--accent-1)" }}>
+              <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" fill="currentColor" />
+            </svg>
+            <h1 style={{ fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 800 }}>
+              <span style={{ background: "linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                 SkyPredict
-              </h1>
-            </div>
-            <p className="text-slate-400 text-lg">
-              AI-Powered Flight Price Prediction for Indian Airlines
-            </p>
-            <div className="mt-3 flex items-center justify-center gap-2">
-              <span className="badge badge-success">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 mr-2" />
-                Random Forest &middot; R&sup2; = 0.98
               </span>
-            </div>
-          </header>
+            </h1>
+          </div>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>
+            AI-Powered Flight Price Prediction for Indian Airlines
+          </p>
+          <div style={{ marginTop: "0.75rem", display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+            <span className="badge">
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--accent-4)", marginRight: 6, display: "inline-block" }} />
+              Random Forest · R² = 0.98
+            </span>
+          </div>
+        </header>
 
-          {error && !meta && (
-            <div className="glass-card p-6 text-center mb-6">
-              <p className="text-red-400 font-medium">{error}</p>
-              <p className="text-slate-500 text-sm mt-2">
-                Start the backend: <code className="text-cyan-400">cd backend &amp;&amp; uvicorn main:app --port 8000</code>
-              </p>
-            </div>
-          )}
+        {/* ── ERROR ── */}
+        {error && !meta && (
+          <div className="glass-card" style={{ padding: "1.5rem", textAlign: "center", maxWidth: "500px", width: "100%", marginBottom: "1.5rem" }}>
+            <p style={{ color: "#f87171", fontWeight: 600, fontSize: "0.85rem" }}>{error}</p>
+          </div>
+        )}
 
-          {meta && (
-            <div className="grid lg:grid-cols-3 gap-6">
-              {/* Form Card */}
-              <div className="lg:col-span-2 glass-card p-8">
-                <h2 className="text-xl font-semibold mb-6 text-slate-200">
-                  Flight Details
+        {/* ── MAIN CONTENT ── */}
+        {meta && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.25rem",
+              width: "100%",
+              maxWidth: "1100px",
+            }}
+            className="main-layout"
+          >
+            {/* -- Row: Form + Results -- */}
+            <div
+              style={{
+                display: "flex",
+                gap: "1.25rem",
+                width: "100%",
+                flexWrap: "wrap",
+              }}
+            >
+              {/* ══ FORM CARD ══ */}
+              <div
+                className="glass-card"
+                style={{
+                  flex: "1 1 580px",
+                  minWidth: 0,
+                  padding: "clamp(1.25rem, 3vw, 2rem)",
+                }}
+              >
+                <h2 className="section-title">
+                  <span>✈️</span> Flight Details
                 </h2>
 
-                <div className="grid sm:grid-cols-2 gap-5">
+                {/* Form Grid */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                    gap: "1rem",
+                  }}
+                >
                   {/* Airline */}
                   <div>
-                    <label className="form-label">Airline</label>
+                    <label className="form-label">🏢 Airline</label>
                     <select className="form-select" value={airline} onChange={(e) => setAirline(e.target.value)}>
                       {meta.categories.airline.map((a) => (
-                        <option key={a} value={a}>{a}</option>
+                        <option key={a} value={a}>{AIRLINE_LABELS[a] || a}</option>
                       ))}
                     </select>
                   </div>
 
                   {/* Class */}
                   <div>
-                    <label className="form-label">Class</label>
+                    <label className="form-label">💺 Class</label>
                     <select className="form-select" value={classType} onChange={(e) => setClassType(e.target.value)}>
                       {meta.categories.class_type.map((c) => (
                         <option key={c} value={c}>{c}</option>
@@ -179,9 +223,9 @@ export default function Home() {
                     </select>
                   </div>
 
-                  {/* Source City */}
+                  {/* From */}
                   <div>
-                    <label className="form-label">From</label>
+                    <label className="form-label">🛫 From</label>
                     <select className="form-select" value={sourceCity} onChange={(e) => setSourceCity(e.target.value)}>
                       {meta.categories.source_city.map((c) => (
                         <option key={c} value={c}>{c}</option>
@@ -189,9 +233,9 @@ export default function Home() {
                     </select>
                   </div>
 
-                  {/* Destination City */}
+                  {/* To */}
                   <div>
-                    <label className="form-label">To</label>
+                    <label className="form-label">🛬 To</label>
                     <select className="form-select" value={destCity} onChange={(e) => setDestCity(e.target.value)}>
                       {meta.categories.destination_city.map((c) => (
                         <option key={c} value={c}>{c}</option>
@@ -199,9 +243,9 @@ export default function Home() {
                     </select>
                   </div>
 
-                  {/* Departure Time */}
+                  {/* Departure */}
                   <div>
-                    <label className="form-label">Departure Time</label>
+                    <label className="form-label">🌅 Departure</label>
                     <select className="form-select" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)}>
                       {meta.categories.departure_time.map((t) => (
                         <option key={t} value={t}>{TIME_LABELS[t] || t}</option>
@@ -209,42 +253,47 @@ export default function Home() {
                     </select>
                   </div>
 
-                  {/* Arrival Time */}
+                  {/* Arrival */}
                   <div>
-                    <label className="form-label">Arrival Time</label>
+                    <label className="form-label">🌙 Arrival</label>
                     <select className="form-select" value={arrivalTime} onChange={(e) => setArrivalTime(e.target.value)}>
                       {meta.categories.arrival_time.map((t) => (
                         <option key={t} value={t}>{TIME_LABELS[t] || t}</option>
                       ))}
                     </select>
                   </div>
+                </div>
 
-                  {/* Stops */}
-                  <div className="sm:col-span-2">
-                    <label className="form-label">Stops</label>
-                    <div className="grid grid-cols-3 gap-3">
-                      {meta.categories.stops.map((s) => (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => setStops(s)}
-                          className={`py-3 px-4 rounded-xl text-sm font-semibold transition-all border ${
-                            stops === s
-                              ? "bg-blue-500/20 border-blue-500/50 text-blue-300"
-                              : "bg-slate-800/40 border-slate-700/30 text-slate-400 hover:border-slate-600"
-                          }`}
-                        >
-                          {STOP_LABELS[s] || s}
-                        </button>
-                      ))}
-                    </div>
+                {/* Stops — full width */}
+                <div style={{ marginTop: "1rem" }}>
+                  <label className="form-label">🔄 Stops</label>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.6rem" }}>
+                    {meta.categories.stops.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setStops(s)}
+                        className={`stop-btn ${stops === s ? "active" : ""}`}
+                      >
+                        {STOP_LABELS[s] || s}
+                      </button>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Duration Slider */}
+                {/* Sliders Row */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                    gap: "1rem",
+                    marginTop: "1rem",
+                  }}
+                >
+                  {/* Duration */}
                   <div>
                     <label className="form-label">
-                      Duration &mdash;{" "}
-                      <span className="text-blue-400 font-bold">{duration} hrs</span>
+                      ⏱️ Duration — <span style={{ color: "var(--accent-3)", fontWeight: 700 }}>{duration} hrs</span>
                     </label>
                     <input
                       type="range"
@@ -253,19 +302,18 @@ export default function Home() {
                       step={0.5}
                       value={duration}
                       onChange={(e) => setDuration(parseFloat(e.target.value))}
-                      className="mt-2"
+                      style={{ marginTop: "0.4rem" }}
                     />
-                    <div className="flex justify-between text-xs text-slate-500 mt-1">
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.65rem", color: "var(--text-muted)", marginTop: 4 }}>
                       <span>{Math.ceil(meta.duration_range.min)}h</span>
                       <span>{Math.floor(meta.duration_range.max)}h</span>
                     </div>
                   </div>
 
-                  {/* Days Left Slider */}
+                  {/* Days Left */}
                   <div>
                     <label className="form-label">
-                      Days Before Departure &mdash;{" "}
-                      <span className="text-blue-400 font-bold">{daysLeft} days</span>
+                      📅 Booking — <span style={{ color: "var(--accent-3)", fontWeight: 700 }}>{daysLeft} days</span>
                     </label>
                     <input
                       type="range"
@@ -274,9 +322,9 @@ export default function Home() {
                       step={1}
                       value={daysLeft}
                       onChange={(e) => setDaysLeft(parseInt(e.target.value))}
-                      className="mt-2"
+                      style={{ marginTop: "0.4rem" }}
                     />
-                    <div className="flex justify-between text-xs text-slate-500 mt-1">
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.65rem", color: "var(--text-muted)", marginTop: 4 }}>
                       <span>{meta.days_left_range.min} day</span>
                       <span>{meta.days_left_range.max} days</span>
                     </div>
@@ -284,63 +332,64 @@ export default function Home() {
                 </div>
 
                 {/* Predict Button */}
-                <button
-                  className="btn-predict mt-8"
-                  onClick={handlePredict}
-                  disabled={loading || !isFormValid}
-                >
+                <button className="btn-predict" onClick={handlePredict} disabled={loading || !isFormValid} style={{ marginTop: "1.5rem" }}>
                   {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle
-                          className="opacity-25"
-                          cx="12" cy="12" r="10"
-                          stroke="currentColor" strokeWidth="4" fill="none"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
+                    <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+                      <svg className="spinner" width="20" height="20" viewBox="0 0 24 24">
+                        <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                        <path opacity="0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      Predicting...
+                      Analyzing...
                     </span>
                   ) : (
-                    "Predict Price"
+                    "✈ Predict Price"
                   )}
                 </button>
 
                 {error && meta && (
-                  <p className="text-red-400 text-sm mt-4 text-center">{error}</p>
+                  <p style={{ color: "#f87171", fontSize: "0.85rem", textAlign: "center", marginTop: "0.75rem" }}>{error}</p>
                 )}
               </div>
 
-              {/* Result Panel */}
-              <div className="lg:col-span-1 space-y-6">
-                {/* Price Result */}
-                <div className="glass-card p-8 text-center">
-                  <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+              {/* ══ RESULTS COLUMN ══ */}
+              <div
+                style={{
+                  flex: "1 1 340px",
+                  minWidth: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1.25rem",
+                }}
+              >
+                {/* Price Card */}
+                <div
+                  className="glass-card result-card"
+                  style={{ padding: "clamp(1.25rem, 3vw, 2rem)", textAlign: "center" }}
+                >
+                  <h3 className="section-title" style={{ justifyContent: "center" }}>
                     Predicted Price
                   </h3>
+
                   {result ? (
                     <div className="price-result">
-                      <div className="text-5xl font-extrabold price-glow text-white mb-2">
+                      <div className="price-glow" style={{ fontSize: "clamp(2.5rem, 6vw, 3.5rem)", fontWeight: 900, lineHeight: 1.1 }}>
                         &#8377;{result.predicted_price.toLocaleString("en-IN")}
                       </div>
-                      <p className="text-slate-400 text-sm">
+                      <p style={{ color: "var(--text-secondary)", fontSize: "0.85rem", marginTop: "0.25rem" }}>
                         Indian Rupees
                       </p>
-                      <div className="mt-4 pt-4 border-t border-slate-700/50">
-                        <p className="text-xs text-slate-500">
-                          Model: {result.model} &middot; R&sup2; = {result.r2_score}
+                      <div style={{ marginTop: "1rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border-subtle)" }}>
+                        <p style={{ fontSize: "0.6rem", color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.15em" }}>
+                          Model: {result.model} · R² = {result.r2_score}
                         </p>
                       </div>
                     </div>
                   ) : (
-                    <div className="py-8">
-                      <div className="text-6xl mb-4 opacity-20">&#9992;</div>
-                      <p className="text-slate-500 text-sm">
-                        Fill in flight details and click<br />&ldquo;Predict Price&rdquo;
+                    <div style={{ padding: "2.5rem 0" }}>
+                      <div className="plane-float" style={{ fontSize: "4rem", color: "var(--text-muted)", opacity: 0.2 }}>✈</div>
+                      <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", marginTop: "0.75rem", lineHeight: 1.6 }}>
+                        Fill in the flight details and click<br />
+                        <span style={{ color: "var(--accent-1)", fontWeight: 600 }}>Predict Price</span>
                       </p>
                     </div>
                   )}
@@ -348,60 +397,58 @@ export default function Home() {
 
                 {/* Flight Summary */}
                 {result && (
-                  <div className="glass-card p-6 price-result">
-                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
-                      Flight Summary
-                    </h3>
-                    <div className="space-y-3 text-sm">
-                      <SummaryRow label="Airline" value={airline} />
-                      <SummaryRow label="Route" value={`${sourceCity} → ${destCity}`} />
-                      <SummaryRow label="Class" value={classType} />
-                      <SummaryRow label="Stops" value={STOP_LABELS[stops] || stops} />
-                      <SummaryRow label="Departure" value={TIME_LABELS[departureTime] || departureTime} />
-                      <SummaryRow label="Duration" value={`${duration} hours`} />
-                      <SummaryRow label="Booking" value={`${daysLeft} days ahead`} />
-                    </div>
+                  <div className="glass-card price-result" style={{ padding: "1.25rem" }}>
+                    <h3 className="section-title">Flight Summary</h3>
+                    <SummaryRow label="Airline" value={AIRLINE_LABELS[airline] || airline} />
+                    <SummaryRow label="Route" value={`${sourceCity} → ${destCity}`} />
+                    <SummaryRow label="Class" value={classType} />
+                    <SummaryRow label="Stops" value={STOP_LABELS[stops] || stops} />
+                    <SummaryRow label="Departure" value={TIME_LABELS[departureTime] || departureTime} />
+                    <SummaryRow label="Duration" value={`${duration} hours`} />
+                    <SummaryRow label="Booking" value={`${daysLeft} days ahead`} />
                   </div>
                 )}
 
-                {/* Info Card */}
-                <div className="glass-card p-6">
-                  <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">
-                    About This Model
-                  </h3>
-                  <ul className="text-xs text-slate-500 space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="text-blue-400 mt-0.5">&#9679;</span>
-                      Trained on 300K+ flight records
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-indigo-400 mt-0.5">&#9679;</span>
-                      Random Forest with 30 features
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-cyan-400 mt-0.5">&#9679;</span>
-                      98% accuracy (R&sup2; = 0.9765)
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-green-400 mt-0.5">&#9679;</span>
-                      6 Indian cities, 6 airlines
-                    </li>
-                  </ul>
+                {/* About */}
+                <div className="glass-card" style={{ padding: "1.25rem" }}>
+                  <h3 className="section-title">About This Model</h3>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                    <Fact color="var(--accent-1)" text="Trained on 300K+ flight records" />
+                    <Fact color="var(--accent-2)" text="Random Forest with 30 features" />
+                    <Fact color="var(--accent-3)" text="98% accuracy (R² = 0.9765)" />
+                    <Fact color="var(--accent-4)" text="6 Indian cities, 6 airlines" />
+                  </div>
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </main>
+          </div>
+        )}
+
+        {/* ── FOOTER ── */}
+        <footer style={{ marginTop: "2.5rem", textAlign: "center", paddingBottom: "1rem" }}>
+          <p style={{ color: "var(--text-muted)", fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+            Built with FastAPI · Next.js · Random Forest
+          </p>
+        </footer>
+      </div>
     </>
   );
 }
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-center">
-      <span className="text-slate-500">{label}</span>
-      <span className="text-slate-200 font-medium">{value}</span>
+    <div className="summary-row">
+      <span style={{ color: "var(--text-muted)", fontSize: "0.75rem" }}>{label}</span>
+      <span style={{ color: "var(--text-primary)", fontSize: "0.85rem", fontWeight: 600 }}>{value}</span>
+    </div>
+  );
+}
+
+function Fact({ color, text }: { color: string; text: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <span style={{ width: 6, height: 6, borderRadius: "50%", background: color, flexShrink: 0 }} />
+      <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>{text}</span>
     </div>
   );
 }

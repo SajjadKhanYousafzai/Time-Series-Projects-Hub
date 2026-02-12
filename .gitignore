@@ -49,12 +49,26 @@ node_modules/
 out/
 build/
 
-# Environment variables
+# Environment variables (SENSITIVE — never commit)
 .env
 .env.local
+.env.production
+.env*.local
 
 # Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# HuggingFace
+hf_cache/
+.huggingface/
+
+# Test & Upload scripts (contain API URLs)
+test_api.py
+**/model/upload_to_hf.py
+
+# Vercel
+.vercel/
+

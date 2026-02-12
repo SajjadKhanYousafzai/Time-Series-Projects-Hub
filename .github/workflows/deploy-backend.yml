@@ -1,0 +1,28 @@
+name: Deploy Backend to HF Spaces
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Airlines Flights Time Series/huggingface/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Push to HF Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          cd "Airlines Flights Time Series/huggingface"
+          git init
+          git lfs install
+          git remote add space https://Sajjad-Ali-Shah:$HF_TOKEN@huggingface.co/spaces/Sajjad-Ali-Shah/skypredict-api
+          git fetch space main 2>/dev/null || true
+          git checkout -b main
+          git add .
+          git -c user.email="ci@github.com" -c user.name="GitHub Actions" commit -m "Auto-deploy from GitHub Actions"
+          git push space main --force

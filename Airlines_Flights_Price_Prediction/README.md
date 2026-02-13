@@ -1,32 +1,72 @@
-# ✈️ Airlines Flights Time Series Analysis
+# ✈️ SkyPredict — AI Flight Price Prediction
 
-Flight Booking Data Analysis for Various Cities in India
+> **Predict Indian domestic flight prices in real-time using machine learning.**
+
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-SkyPredict-blue?style=for-the-badge)](https://skypredict-fawn.vercel.app/)
+[![API](https://img.shields.io/badge/⚡_API-HuggingFace_Spaces-yellow?style=for-the-badge)](https://sajjad-ali-shah-skypredict-api.hf.space/)
+[![Model](https://img.shields.io/badge/🤗_Model-HuggingFace_Hub-orange?style=for-the-badge)](https://huggingface.co/Sajjad-Ali-Shah/skypredict-flight-price)
+
+---
+
+## 🌐 Live Demo
+
+🔗 **Dashboard:** [skypredict-fawn.vercel.app](https://skypredict-fawn.vercel.app/)  
+🔗 **API Endpoint:** [sajjad-ali-shah-skypredict-api.hf.space](https://sajjad-ali-shah-skypredict-api.hf.space/)  
+🔗 **Model on HuggingFace:** [Sajjad-Ali-Shah/skypredict-flight-price](https://huggingface.co/Sajjad-Ali-Shah/skypredict-flight-price)
 
 ---
 
 ## 📊 Project Overview
 
-This project analyzes the **Flights Booking Dataset** which contains scraped data from a famous travel website. The dataset provides comprehensive insights into flight travel details between cities in India, including pricing patterns, airline operations, and travel trends. This analysis is ideal for professionals working in the **Airlines and Travel domain**.
+A full-stack machine learning project that predicts Indian domestic flight prices. Users select flight details (airline, route, class, timing) and get an instant price prediction powered by a Random Forest model trained on 300K+ flight records.
 
-**Data Format:** CSV  
-**Analysis Tool:** Pandas, NumPy, Matplotlib, Statsmodels  
-**Domain:** Airlines & Travel Industry
+### Model Performance
+
+| Metric            | Score                   |
+| ----------------- | ----------------------- |
+| **R² Score**      | 0.9765                  |
+| **Algorithm**     | Random Forest Regressor |
+| **Features**      | 30 engineered features  |
+| **Training Data** | 300,000+ flight records |
 
 ---
 
-## 🎯 Research Questions
+## 🏗️ Architecture
 
-This project addresses the following analytical questions:
+```
+┌─────────────────┐     API Call     ┌─────────────────────┐     Downloads     ┌─────────────────┐
+│    Frontend      │ ──────────────> │    Backend (API)     │ <──────────────── │    Model Hub     │
+│   (Vercel)       │ <────────────── │ (HuggingFace Spaces) │                   │ (HuggingFace)    │
+│                  │    Response     │                      │                   │                  │
+│  Next.js 16      │                │  FastAPI + Uvicorn    │                   │  model.joblib    │
+│  TypeScript      │                │  Docker Container     │                   │  scaler.joblib   │
+│  Tailwind CSS    │                │  Port 7860            │                   │  metadata.json   │
+└─────────────────┘                 └──────────────────────┘                   └─────────────────┘
+```
 
-1. What are the airlines in the dataset, accompanied by their frequencies?
-2. Show Bar Graphs representing the Departure Time & Arrival Time
-3. Show Bar Graphs representing the Source City & Destination City
-4. Does price vary with airlines?
-5. Does ticket price change based on the departure time and arrival time?
-6. How does the price change with change in Source and Destination?
-7. How is the price affected when tickets are bought in just 1 or 2 days before departure?
-8. How does the ticket price vary between Economy and Business class?
-9. What will be the Average Price of Vistara airline for a flight from Delhi to Hyderabad in Business Class?
+---
+
+## ✨ Features
+
+- 🎯 **Real-time Predictions** — Get instant flight price estimates
+- 🛫 **6 Airlines** — AirAsia, Air India, Go First, IndiGo, SpiceJet, Vistara
+- 🏙️ **6 Cities** — Delhi, Mumbai, Bangalore, Kolkata, Hyderabad, Chennai
+- 💺 **Economy & Business** — Predictions for both travel classes
+- 📱 **Responsive Design** — Works on desktop, tablet, and mobile
+- 🌙 **Dark Theme** — Premium glassmorphism UI with gradient accents
+- ⚡ **Fast API** — Sub-second prediction response time
+
+---
+
+## 🎯 Research Questions Addressed
+
+1. What are the airlines in the dataset and their frequencies?
+2. How do departure and arrival times affect pricing?
+3. How do source and destination cities influence price?
+4. Does price vary significantly across airlines?
+5. How does booking timing (days before departure) affect price?
+6. What is the price difference between Economy and Business class?
+7. What are the key factors driving flight prices?
 
 ---
 
@@ -34,24 +74,61 @@ This project addresses the following analytical questions:
 
 ### Categorical Features
 
-| Feature | Description | Unique Values |
-|---------|-------------|---------------|
-| **Airline** | Name of the airline company | 6 different airlines |
-| **Flight** | Plane's flight code | Multiple unique codes |
-| **Source City** | City from which the flight takes off | 6 unique cities |
-| **Departure Time** | Time periods grouped into bins | 6 unique time labels |
-| **Stops** | Number of stops between source and destination | 3 distinct values |
-| **Arrival Time** | Time intervals grouped into bins | 6 distinct time labels |
-| **Destination City** | City where the flight will land | 6 unique cities |
-| **Class** | Seat class information | 2 values (Business & Economy) |
+| Feature              | Description       | Values            |
+| -------------------- | ----------------- | ----------------- |
+| **Airline**          | Airline company   | 6 airlines        |
+| **Source City**      | Departure city    | 6 cities          |
+| **Destination City** | Arrival city      | 6 cities          |
+| **Departure Time**   | Time of departure | 6 time bins       |
+| **Arrival Time**     | Time of arrival   | 6 time bins       |
+| **Stops**            | Number of stops   | Non-Stop, 1, 2+   |
+| **Class**            | Seat class        | Economy, Business |
 
 ### Continuous Features
 
-| Feature | Description | Type |
-|---------|-------------|------|
-| **Duration** | Total travel time between cities (in hours) | Continuous |
-| **Days Left** | Trip date - Booking date | Continuous |
-| **Price** | Ticket price | **Target Variable** |
+| Feature       | Description                        |
+| ------------- | ---------------------------------- |
+| **Duration**  | Travel time in hours               |
+| **Days Left** | Days between booking and departure |
+| **Price**     | Ticket price (**Target Variable**) |
+
+---
+
+## 📂 Project Structure
+
+```
+Airlines_Flights_Price_Prediction/
+│
+├── 📓 airlines_flight.ipynb       # EDA & analysis notebook
+├── 📊 Data/
+│   └── airlines_flights_data.csv  # Raw dataset
+│
+├── 🤖 model/
+│   ├── train_model.py             # Model training script
+│   ├── model.joblib               # Trained Random Forest model
+│   ├── scaler.joblib              # Feature scaler
+│   └── metadata.json              # Model metadata & categories
+│
+├── ⚡ backend/
+│   └── main.py                    # FastAPI backend (local dev)
+│
+├── 🐳 huggingface/
+│   ├── app.py                     # FastAPI app for HF Spaces
+│   ├── Dockerfile                 # Docker build configuration
+│   ├── requirements.txt           # Python dependencies
+│   └── README.md                  # HF Spaces metadata
+│
+├── 🎨 dashboard/
+│   ├── app/
+│   │   ├── page.tsx               # Main dashboard page
+│   │   ├── layout.tsx             # Root layout
+│   │   └── globals.css            # Design system & styles
+│   ├── package.json               # Node.js dependencies
+│   └── tsconfig.json              # TypeScript config
+│
+├── requirements.txt               # Python dependencies
+└── README.md                      # This file
+```
 
 ---
 
@@ -59,83 +136,78 @@ This project addresses the following analytical questions:
 
 ### Prerequisites
 
-- Python 3.8 or higher
-- Jupyter Notebook or JupyterLab
+- Python 3.8+
+- Node.js 18+
+- npm or yarn
 
-### Installation
+### Run Locally
 
-1. Clone the repository or navigate to the project directory:
+**1. Clone the repository:**
+
 ```bash
-cd "Airlines Flights Time Series"
+git clone https://github.com/SajjadKhanYousafzai/Time-Series-Projects-Hub.git
+cd Time-Series-Projects-Hub/Airlines_Flights_Price_Prediction
 ```
 
-2. Install required packages:
+**2. Start the backend:**
+
 ```bash
 pip install -r requirements.txt
+cd backend
+uvicorn main:app --reload --port 8000
 ```
 
-### Required Packages
+**3. Start the dashboard:**
 
-- `numpy` - Numerical computing
-- `pandas` - Data manipulation and analysis
-- `matplotlib` - Data visualization
-- `statsmodels` - Time series analysis
-- `jupyter` - Interactive notebook environment
-
----
-
-## 📂 Project Structure
-
-```
-Airlines Flights Time Series/
-│
-├── airlines_flight.ipynb     # Main analysis notebook
-├── requirements.txt           # Python dependencies
-├── README.md                  # Project documentation
-└── Data/
-    └── airlines_flights_data.csv  # Dataset file
-```
-
----
-
-## 💻 Usage
-
-1. Launch Jupyter Notebook:
 ```bash
-jupyter notebook
+cd dashboard
+npm install
+npm run dev
 ```
 
-2. Open `airlines_flight.ipynb` in your browser
-
-3. Run the cells sequentially to:
-   - Load and explore the dataset
-   - Visualize flight patterns and distributions
-   - Analyze pricing factors
-   - Answer the research questions
-   - Generate insights for the travel industry
+**4. Open:** [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 📊 Key Analyses
+## 🛠️ Tech Stack
 
-The notebook includes:
-
-- **Exploratory Data Analysis (EDA)** - Understanding dataset structure and distributions
-- **Visualization** - Bar plots, time series plots, and distribution charts for all features
-- **Price Analysis** - Investigating factors affecting ticket prices
-- **Comparative Analysis** - Airlines, routes, timing, and class comparisons
-- **Time Series Analysis** - Temporal patterns in flight bookings
+| Layer                | Technology                                      |
+| -------------------- | ----------------------------------------------- |
+| **Frontend**         | Next.js 16, TypeScript, Tailwind CSS            |
+| **Backend**          | FastAPI, Uvicorn, Python                        |
+| **ML Model**         | Scikit-learn (Random Forest)                    |
+| **Deployment**       | Vercel (frontend), HuggingFace Spaces (backend) |
+| **Model Hosting**    | HuggingFace Hub                                 |
+| **CI/CD**            | GitHub Actions                                  |
+| **Containerization** | Docker                                          |
 
 ---
 
-## 📈 Key Insights
+## 📡 API Endpoints
 
-The analysis reveals patterns in:
-- Airline pricing strategies
-- Peak travel times and routes
-- Impact of booking timing on prices
-- Business vs Economy class pricing
-- Route-specific pricing patterns
+| Method | Endpoint    | Description                 |
+| ------ | ----------- | --------------------------- |
+| `GET`  | `/`         | Health check                |
+| `GET`  | `/metadata` | Model metadata & categories |
+| `POST` | `/predict`  | Predict flight price        |
+
+### Example Prediction Request
+
+```bash
+curl -X POST "https://sajjad-ali-shah-skypredict-api.hf.space/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "airline": "Vistara",
+    "source_city": "Delhi",
+    "destination_city": "Mumbai",
+    "departure_time": "Morning",
+    "arrival_time": "Night",
+    "stops": "one",
+    "class_type": "Business",
+    "duration": 5.5,
+    "days_left": 15
+  }'
+```
 
 ---
 
@@ -149,7 +221,8 @@ The analysis reveals patterns in:
 
 **Sajjad Ali Shah**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/sajjad-ali-shah47/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sajjad-ali-shah47/)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/SajjadKhanYousafzai)
 
 ---
 
@@ -159,16 +232,4 @@ This project is open source and available for educational and research purposes.
 
 ---
 
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the issues page or submit a pull request.
-
----
-
-## 📞 Contact
-
-For questions or feedback, please reach out via [LinkedIn](https://www.linkedin.com/in/sajjad-ali-shah47/).
-
----
-
-**Note:** This project is part of the Time-Series-Projects-Hub repository, showcasing various time series analysis techniques applied to real-world datasets.
+**⭐ If you found this project useful, give it a star!**

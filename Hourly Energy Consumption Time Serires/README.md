@@ -67,6 +67,37 @@ The dataset includes hourly power consumption data from the following states and
 8. **ARIMA Forecasting:** Build predictive models for 24-hour energy consumption forecasts
 9. **Model Evaluation:** Assess forecast accuracy using MAE and RMSE metrics
 
+## 📓 Available Notebooks
+
+### General Overview
+- **`Time_series.ipynb`** - Comprehensive analysis comparing all regional datasets
+
+### Individual Dataset Analysis (All_Notesbook/)
+Each notebook provides a complete time series analysis for its respective dataset:
+
+| Notebook | Dataset | Description |
+|----------|---------|-------------|
+| **AEP_time_series.ipynb** | AEP | American Electric Power |
+| **COMED_time_series.ipynb** | COMED | Commonwealth Edison |
+| **DAYTON_time_series.ipynb** | DAYTON | Dayton Power & Light |
+| **DEOK_time_series.ipynb** | DEOK | Duke Energy Ohio/Kentucky |
+| **DOM_time_series.ipynb** | DOM | Dominion Energy |
+| **DUQ_time_series.ipynb** | DUQ | Duquesne Light |
+| **EKPC_time_series.ipynb** | EKPC | East Kentucky Power Cooperative |
+| **FE_time_series.ipynb** | FE | FirstEnergy |
+| **NI_time_series.ipynb** | NI | Northern Indiana Public Service Company |
+| **PJME_time_series.ipynb** | PJME | PJM East |
+| **PJMW_time_series.ipynb** | PJMW | PJM West |
+
+Each individual notebook includes:
+- ✅ Data loading and preparation
+- ✅ Time series visualization (full, yearly, weekly patterns)
+- ✅ Feature engineering (31+ features)
+- ✅ Temporal pattern analysis
+- ✅ Stationarity testing (ADF & KPSS)
+- ✅ Autocorrelation analysis (ACF & PACF)
+- ✅ Time series decomposition (trend, seasonal, residual)
+
 ## 🛠️ Technologies & Libraries
 
 - **Python 3.x**
@@ -79,8 +110,25 @@ The dataset includes hourly power consumption data from the following states and
 ## 📋 Prerequisites
 
 ```bash
-pip install pandas numpy matplotlib seaborn statsmodels scikit-learn
+pip install pandas numpy matplotlib seaborn statsmodels scikit-learn scipy
 ```
+
+Or use the requirements file:
+```bash
+pip install -r requirements.txt
+```
+
+## ⚡ Quick Start
+
+### Option 1: Compare All Regions (Recommended for Overview)
+Open `Time_series.ipynb` to see comparative analysis across all energy regions.
+
+### Option 2: Analyze Individual Regions (Detailed Analysis)
+Navigate to `All_Notesbook/` and open any region-specific notebook:
+- **PJME_time_series.ipynb** - Analyze PJM East region
+- **AEP_time_series.ipynb** - Analyze American Electric Power
+- **COMED_time_series.ipynb** - Analyze Commonwealth Edison
+- And more... (see full list above)
 
 ## 🚀 Getting Started
 
@@ -92,19 +140,52 @@ pip install pandas numpy matplotlib seaborn statsmodels scikit-learn
 
 2. **Ensure data files are in the Data folder:**
    ```
-   Time Serires Hourly Energy Consumption/
+   Hourly Energy Consumption Time Serires/
+   ├── All_Notesbook/
+   │   ├── AEP_time_series.ipynb
+   │   ├── COMED_time_series.ipynb
+   │   ├── DAYTON_time_series.ipynb
+   │   ├── DEOK_time_series.ipynb
+   │   ├── DOM_time_series.ipynb
+   │   ├── DUQ_time_series.ipynb
+   │   ├── EKPC_time_series.ipynb
+   │   ├── FE_time_series.ipynb
+   │   ├── NI_time_series.ipynb
+   │   ├── PJME_time_series.ipynb
+   │   └── PJMW_time_series.ipynb
    ├── Data/
    │   ├── AEP_hourly.csv
    │   ├── COMED_hourly.csv
-   │   └── ... (other regional files)
+   │   ├── DAYTON_hourly.csv
+   │   ├── DEOK_hourly.csv
+   │   ├── DOM_hourly.csv
+   │   ├── DUQ_hourly.csv
+   │   ├── EKPC_hourly.csv
+   │   ├── FE_hourly.csv
+   │   ├── NI_hourly.csv
+   │   ├── PJME_hourly.csv
+   │   ├── PJMW_hourly.csv
+   │   ├── PJM_Load_hourly.csv
+   │   ├── pjm_hourly_est.csv
+   │   └── est_hourly.parquet
    ├── image/
    │   └── 12.jpg
+   ├── README.md
+   ├── requirements.txt
    └── Time_series.ipynb
    ```
 
-3. **Run the Jupyter Notebook:**
+3. **Run the Jupyter Notebooks:**
+   
+   **General Overview:**
    ```bash
    jupyter notebook Time_series.ipynb
+   ```
+   
+   **Individual Dataset Analysis (in All_Notesbook folder):**
+   ```bash
+   cd All_Notesbook
+   jupyter notebook PJME_time_series.ipynb  # Or any other dataset
    ```
 
 ## 📈 Analysis Pipeline
@@ -156,13 +237,26 @@ The analysis reveals:
 
 ## 📝 Results & Visualizations
 
-The notebook includes:
+The notebooks include:
 - ✅ Correlation heatmaps
 - ✅ Hourly consumption bar charts
 - ✅ Time series decomposition plots
 - ✅ Seasonal trend line charts
 - ✅ 24-hour forecast comparisons (Actual vs. Predicted)
 - ✅ Model performance metrics (MAE, RMSE)
+- ✅ Weekly and monthly pattern analysis
+- ✅ Stationarity test results
+- ✅ ACF/PACF autocorrelation plots
+
+### Main Analysis Notebook
+`Time_series.ipynb` provides comparative analysis across all regions.
+
+### Individual Dataset Notebooks
+Each notebook in the `All_Notesbook/` folder focuses on deep-dive analysis for a specific region, making it easy to:
+- Analyze specific regional patterns in detail
+- Build region-specific forecasting models
+- Compare results across different energy providers
+- Identify unique characteristics of each region
 
 ## 🤝 Contributing
 

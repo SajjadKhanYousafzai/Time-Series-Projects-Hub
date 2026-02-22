@@ -14,9 +14,10 @@ import {
 import {
   monthlyAvg, hourlyAvg, yearlyAvg, seasonalStats, sourceStats,
   dayOfWeek, modelComparison, keyInsights, summaryStats,
-  yoyComparison, years, sources, seasons,
+  yoyComparison, years, sources, seasons, seasonMonths,
 } from './data';
 
+/* ═══════════ CONSTANTS ═══════════ */
 const CHART_COLORS = ['#3b82f6', '#8b5cf6', '#f43f5e', '#10b981', '#f59e0b', '#06b6d4', '#ec4899'];
 const SEASON_COLORS: Record<string, string> = { Winter: '#3b82f6', Spring: '#10b981', Summer: '#f59e0b', Fall: '#8b5cf6' };
 const PIE_COLORS = ['#3b82f6', '#f59e0b'];
@@ -36,10 +37,34 @@ const impactColors: Record<string, string> = {
   'Low': 'bg-sky-500/20 text-sky-400',
 };
 
+/* ═══════════ HELPERS ═══════════ */
+/** Get the production value based on source filter */
+function getSourceValue(row: { production: number; wind: number; solar: number }, source: string): number {
+  if (source === 'Wind') return row.wind;
+  if (source === 'Solar') return row.solar;
+  return row.production;
+}
+
+/** Get label for current source */
+function sourceLabel(source: string): string {
+  if (source === 'all') return 'All Sources';
+  return source;
+}
+
+/** Build active filter description chips */
+function activeFilterDesc(source: string, season: string, year: string): string[] {
+  const parts: string[] = [];
+  if (source !== 'all') parts.push(`Source: ${source}`);
+  if (season !== 'all') parts.push(`Season: ${season}`);
+  if (year !== 'all') parts.push(`Year: ${year}`);
+  return parts;
+}
+
+/* ═══════════ TOOLTIP ═══════════ */
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload) return null;
   return (
-    <div className="glass-card p-3 text-sm" style={{ background: 'rgba(10, 14, 26, 0.95)', border: '1px solid rgba(255,255,255,0.1)' }}>
+    <div className="p-3 text-sm rounded-lg" style={{ background: 'rgba(10, 14, 26, 0.95)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)' }}>
       <p className="text-slate-300 mb-1 font-medium">{label}</p>
       {payload.map((p: any, i: number) => (
         <p key={i} style={{ color: p.color }} className="font-semibold">
@@ -51,6 +76,20 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 type TabKey = 'overview' | 'analysis' | 'forecasting';
+
+/* ═══════════ FILTER BADGE ═══════════ */
+function FilterBadges({ filters }: { filters: string[] }) {
+  if (filters.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-1.5 mb-3">
+      {filters.map((f) => (
+        <span key={f} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 text-[10px] font-semibold border border-blue-500/20">
+          <Filter className="w-2.5 h-2.5" /> {f}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 /* ═══════════ FILTER BAR ═══════════ */
 function FilterBar({
@@ -118,7 +157,8 @@ export default function Dashboard() {
   const [selectedSeason, setSelectedSeason] = useState('all');
   const [selectedYear, setSelectedYear] = useState('all');
 
-  const activeFilters = [selectedSource, selectedSeason, selectedYear].filter(v => v !== 'all').length;
+  const activeFilterCount = [selectedSource, selectedSeason, selectedYear].filter(v => v !== 'all').length;
+  const filterLabels = activeFilterDesc(selectedSource, selectedSeason, selectedYear);
 
   const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
     { key: 'overview', label: 'Overview', icon: <Activity className="w-4 h-4" /> },
@@ -136,11 +176,11 @@ export default function Dashboard() {
           </div>
           <div>
             <h1 className="text-3xl md:text-4xl font-bold">
-              <span className="gradient-text">Wind & Solar Energy</span>
+              <span className="gradient-text">Wind &amp; Solar Energy</span>
               <span className="text-slate-400 font-normal text-lg md:text-xl ml-3">Dashboard</span>
             </h1>
             <p className="text-slate-500 mt-1 text-sm md:text-base">
-              Interactive EDA & Forecasting — {summaryStats.totalRecords} hourly records · {summaryStats.dateRange}
+              Interactive EDA &amp; Forecasting — {summaryStats.totalRecords} hourly records · {summaryStats.dateRange}
             </p>
           </div>
         </div>
@@ -162,9 +202,9 @@ export default function Dashboard() {
             {tab.label}
           </button>
         ))}
-        {activeFilters > 0 && (
+        {activeFilterCount > 0 && (
           <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-blue-500/15 text-blue-400 text-xs font-semibold ml-auto">
-            <Filter className="w-3 h-3" /> {activeFilters} filter{activeFilters > 1 ? 's' : ''} active
+            <Filter className="w-3 h-3" /> {activeFilterCount} filter{activeFilterCount > 1 ? 's' : ''} active
           </span>
         )}
       </nav>
@@ -177,72 +217,160 @@ export default function Dashboard() {
       />
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Production', value: summaryStats.totalProduction, sub: '2020-2025', icon: <Zap className="w-5 h-5 text-amber-400" />, glow: 'glow-amber' },
-          { label: 'Avg Daily Output', value: summaryStats.avgDaily, sub: 'per day', icon: <Activity className="w-5 h-5 text-blue-400" />, glow: 'glow-blue' },
-          { label: 'Peak Season', value: summaryStats.peakSeason, sub: `${summaryStats.peakMonth} at ${summaryStats.peakHour}`, icon: <Snowflake className="w-5 h-5 text-cyan-400" />, glow: 'glow-blue' },
-          { label: 'Wind / Solar Split', value: `${summaryStats.windShare} / ${summaryStats.solarShare}`, sub: 'by records', icon: <Wind className="w-5 h-5 text-purple-400" />, glow: 'glow-purple' },
-        ].map((m, i) => (
-          <div key={i} className={`glass-card metric-card p-5 ${m.glow} animate-fade-in`} style={{ animationDelay: `${i * 100}ms` }}>
-            <div className="flex justify-between items-start">
-              <div>
-                <p className="text-xs text-slate-400 font-medium">{m.label}</p>
-                <h3 className="text-xl md:text-2xl font-bold mt-1">{m.value}</h3>
-                <p className="text-[11px] text-slate-500 mt-0.5">{m.sub}</p>
-              </div>
-              <div className="p-2 rounded-lg bg-white/[0.05]">{m.icon}</div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <KPICards selectedSource={selectedSource} selectedSeason={selectedSeason} />
 
       {/* Tab Content */}
-      {activeTab === 'overview' && <OverviewTab selectedYear={selectedYear} />}
-      {activeTab === 'analysis' && <AnalysisTab selectedSource={selectedSource} selectedSeason={selectedSeason} />}
+      {activeTab === 'overview' && (
+        <OverviewTab source={selectedSource} season={selectedSeason} year={selectedYear} filterLabels={filterLabels} />
+      )}
+      {activeTab === 'analysis' && (
+        <AnalysisTab source={selectedSource} season={selectedSeason} year={selectedYear} filterLabels={filterLabels} />
+      )}
       {activeTab === 'forecasting' && <ForecastingTab />}
 
       {/* Footer */}
       <footer className="mt-12 text-center text-slate-500 text-sm pb-6">
-        <p>Built by <a href="https://www.linkedin.com/in/sajjad-ali-shah47/" className="text-blue-400 hover:text-blue-300 underline" target="_blank">Sajjad Ali Shah</a> — Wind & Solar Energy Production Dashboard</p>
+        <p>Built by <a href="https://www.linkedin.com/in/sajjad-ali-shah47/" className="text-blue-400 hover:text-blue-300 underline" target="_blank">Sajjad Ali Shah</a> — Wind &amp; Solar Energy Production Dashboard</p>
       </footer>
     </div>
   );
 }
 
+/* ═══════════ KPI CARDS ═══════════ */
+function KPICards({ selectedSource, selectedSeason }: { selectedSource: string; selectedSeason: string }) {
+  const kpiData = useMemo(() => {
+    // Get source-specific info
+    if (selectedSource === 'all') {
+      const seasonInfo = selectedSeason !== 'all'
+        ? seasonalStats.find(s => s.season === selectedSeason)
+        : null;
+      return {
+        total: summaryStats.totalProduction,
+        avg: seasonInfo ? `${seasonInfo.mean.toLocaleString()} MWh` : summaryStats.avgDaily,
+        peak: seasonInfo ? seasonInfo.season : summaryStats.peakSeason,
+        split: `${summaryStats.windShare} / ${summaryStats.solarShare}`,
+        subTotal: selectedSeason !== 'all' ? `${selectedSeason} season` : '2020-2025',
+        subAvg: selectedSeason !== 'all' ? `avg in ${selectedSeason}` : 'per day',
+      };
+    }
+    const src = sourceStats.find(s => s.source === selectedSource)!;
+    const seasonInfo = selectedSeason !== 'all'
+      ? seasonalStats.find(s => s.season === selectedSeason)
+      : null;
+    const avgVal = seasonInfo
+      ? getSourceValue({ production: seasonInfo.mean, wind: seasonInfo.wind, solar: seasonInfo.solar }, selectedSource)
+      : src.mean;
+    return {
+      total: `${(src.totalMWh / 1e6).toFixed(0)}M MWh`,
+      avg: `${avgVal.toLocaleString()} MWh`,
+      peak: seasonInfo ? seasonInfo.season : summaryStats.peakSeason,
+      split: `${src.share}% of total`,
+      subTotal: `${selectedSource} only`,
+      subAvg: selectedSeason !== 'all' ? `avg ${selectedSource} in ${selectedSeason}` : 'per record',
+    };
+  }, [selectedSource, selectedSeason]);
+
+  const cards = [
+    { label: 'Total Production', value: kpiData.total, sub: kpiData.subTotal, icon: <Zap className="w-5 h-5 text-amber-400" />, glow: 'glow-amber' },
+    { label: 'Average Output', value: kpiData.avg, sub: kpiData.subAvg, icon: <Activity className="w-5 h-5 text-blue-400" />, glow: 'glow-blue' },
+    { label: 'Peak Season', value: kpiData.peak, sub: `${summaryStats.peakMonth} at ${summaryStats.peakHour}`, icon: <Snowflake className="w-5 h-5 text-cyan-400" />, glow: 'glow-blue' },
+    { label: selectedSource === 'all' ? 'Wind / Solar Split' : 'Source Share', value: kpiData.split, sub: 'by records', icon: <Wind className="w-5 h-5 text-purple-400" />, glow: 'glow-purple' },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {cards.map((m, i) => (
+        <div key={i} className={`glass-card metric-card p-5 ${m.glow} animate-fade-in`} style={{ animationDelay: `${i * 100}ms` }}>
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-xs text-slate-400 font-medium">{m.label}</p>
+              <h3 className="text-xl md:text-2xl font-bold mt-1">{m.value}</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5">{m.sub}</p>
+            </div>
+            <div className="p-2 rounded-lg bg-white/[0.05]">{m.icon}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ═══════════ OVERVIEW TAB ═══════════ */
-function OverviewTab({ selectedYear }: { selectedYear: string }) {
-  const filteredYearly = useMemo(() => {
-    if (selectedYear === 'all') return yearlyAvg;
-    return yearlyAvg.filter(y => y.year === selectedYear);
-  }, [selectedYear]);
+function OverviewTab({ source, season, year, filterLabels }: { source: string; season: string; year: string; filterLabels: string[] }) {
+  // Monthly chart — filters by source AND season
+  const monthlyData = useMemo(() => {
+    let data = monthlyAvg.map(m => ({
+      month: m.month,
+      value: getSourceValue(m, source),
+    }));
+    // If season selected, only show months in that season
+    if (season !== 'all') {
+      const months = seasonMonths[season];
+      data = data.filter(d => months.includes(d.month));
+    }
+    return data;
+  }, [source, season]);
+
+  // Yearly chart — filters by year AND source
+  const yearlyData = useMemo(() => {
+    let data = yearlyAvg.map(y => ({
+      year: y.year,
+      value: getSourceValue(y, source),
+    }));
+    if (year !== 'all') {
+      data = data.filter(d => d.year === year);
+    }
+    return data;
+  }, [source, year]);
+
+  // Pie chart — filters by source
+  const pieData = useMemo(() => {
+    if (source === 'all') return sourceStats;
+    return sourceStats.filter(s => s.source === source);
+  }, [source]);
+
+  // Day of week — filters by source
+  const dowData = useMemo(() => {
+    return dayOfWeek.map(d => ({
+      day: d.day,
+      value: getSourceValue(d, source),
+    }));
+  }, [source]);
+
+  const chartColor = source === 'Wind' ? '#3b82f6' : source === 'Solar' ? '#f59e0b' : '#3b82f6';
 
   return (
     <div className="space-y-6">
       {/* Monthly Trend + Key Insights */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 glass-card chart-container">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-blue-400" />
-            Average Monthly Production Pattern
+            Monthly Production — {sourceLabel(source)}{season !== 'all' ? ` · ${season}` : ''}
           </h2>
+          <FilterBadges filters={filterLabels.filter(f => f.startsWith('Source') || f.startsWith('Season'))} />
           <div className="h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={monthlyAvg}>
+              <AreaChart data={monthlyData}>
                 <defs>
                   <linearGradient id="prodGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                    <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${(v / 1e3).toFixed(1)}K`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="production" name="Avg Production" stroke="#3b82f6" strokeWidth={2.5} fill="url(#prodGrad)" />
+                <Area type="monotone" dataKey="value" name={sourceLabel(source)} stroke={chartColor} strokeWidth={2.5} fill="url(#prodGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
+          {season !== 'all' && (
+            <p className="text-xs text-blue-400/70 mt-2 text-center">
+              Showing only {season} months: {seasonMonths[season].join(', ')}
+            </p>
+          )}
         </div>
 
         <div className="glass-card p-6 space-y-4 overflow-auto max-h-[440px]">
@@ -257,7 +385,7 @@ function OverviewTab({ selectedYear }: { selectedYear: string }) {
                   <span style={{ color: insight.color }}>{iconMap[insight.icon]}</span>
                   <h3 className="font-semibold text-sm">{insight.title}</h3>
                 </div>
-                <span className={`impact-badge ${impactColors[insight.impact]}`}>{insight.impact}</span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${impactColors[insight.impact]}`}>{insight.impact}</span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">{insight.description}</p>
             </div>
@@ -268,52 +396,57 @@ function OverviewTab({ selectedYear }: { selectedYear: string }) {
       {/* Yearly Growth + Source Pie */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card chart-container">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-green-400" />
-            Yearly Average Production {selectedYear !== 'all' ? `(${selectedYear})` : '(2020-2025)'}
+            Yearly Average — {sourceLabel(source)}
           </h2>
+          <FilterBadges filters={filterLabels.filter(f => f.startsWith('Source') || f.startsWith('Year'))} />
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={filteredYearly}>
+              <BarChart data={yearlyData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="year" tick={{ fontSize: 12, fill: '#94a3b8' }} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${(v / 1e3).toFixed(1)}K`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="production" name="Avg Production" radius={[8, 8, 0, 0]}>
-                  {filteredYearly.map((_, i) => (
-                    <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                <Bar dataKey="value" name={sourceLabel(source)} radius={[8, 8, 0, 0]}>
+                  {yearlyData.map((_, i) => (
+                    <Cell key={i} fill={source !== 'all' ? chartColor : CHART_COLORS[i % CHART_COLORS.length]} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
           <p className="text-xs text-slate-400 mt-3 text-center">
-            Notable 27.5% jump between 2022 → 2023 suggests new capacity installations
+            {year !== 'all'
+              ? `Showing ${year}: ${yearlyData[0]?.value.toLocaleString()} MWh average`
+              : 'Notable 27.5% jump between 2022 → 2023 suggests new capacity'
+            }
           </p>
         </div>
 
         <div className="glass-card chart-container">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
             <Target className="w-5 h-5 text-purple-400" />
             Energy Source Distribution
           </h2>
+          <FilterBadges filters={filterLabels.filter(f => f.startsWith('Source'))} />
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={sourceStats}
+                  data={pieData}
                   cx="50%" cy="50%"
                   outerRadius={100}
                   innerRadius={55}
                   dataKey="share"
                   nameKey="source"
-                  label={({ source, share }: any) => `${source}: ${share}%`}
+                  label={({ source: s, share }: any) => `${s}: ${share}%`}
                   labelLine={true}
                   stroke="rgba(0,0,0,0.3)"
                   strokeWidth={2}
                 >
-                  {sourceStats.map((_, i) => (
-                    <Cell key={i} fill={PIE_COLORS[i]} />
+                  {pieData.map((s, i) => (
+                    <Cell key={i} fill={s.source === 'Wind' ? '#3b82f6' : '#f59e0b'} />
                   ))}
                 </Pie>
                 <Tooltip formatter={(v: any) => `${v}%`} />
@@ -321,34 +454,35 @@ function OverviewTab({ selectedYear }: { selectedYear: string }) {
             </ResponsiveContainer>
           </div>
           <div className="flex justify-center gap-6 mt-2">
-            <div className="flex items-center gap-2 text-sm">
-              <Wind className="w-4 h-4 text-blue-400" />
-              <span className="text-slate-300"><span className="font-bold text-blue-400">Wind</span> — {sourceStats[0].records.toLocaleString()} records</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Sun className="w-4 h-4 text-amber-400" />
-              <span className="text-slate-300"><span className="font-bold text-amber-400">Solar</span> — {sourceStats[1].records.toLocaleString()} records</span>
-            </div>
+            {pieData.map(src => (
+              <div key={src.source} className="flex items-center gap-2 text-sm">
+                {src.source === 'Wind' ? <Wind className="w-4 h-4 text-blue-400" /> : <Sun className="w-4 h-4 text-amber-400" />}
+                <span className="text-slate-300">
+                  <span className={`font-bold ${src.source === 'Wind' ? 'text-blue-400' : 'text-amber-400'}`}>{src.source}</span> — {src.records.toLocaleString()} records
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Day of Week */}
       <div className="glass-card chart-container">
-        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-cyan-400" />
-          Average Production by Day of Week
+          Daily Production — {sourceLabel(source)}
         </h2>
+        <FilterBadges filters={filterLabels.filter(f => f.startsWith('Source'))} />
         <div className="h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={dayOfWeek}>
+            <BarChart data={dowData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#94a3b8' }} />
-              <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} domain={[5800, 6400]} tickFormatter={(v) => `${(v / 1e3).toFixed(1)}K`} />
+              <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${(v / 1e3).toFixed(1)}K`} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="production" name="Avg Production" radius={[8, 8, 0, 0]}>
-                {dayOfWeek.map((_, i) => (
-                  <Cell key={i} fill={i >= 5 ? '#22d3ee' : '#3b82f6'} />
+              <Bar dataKey="value" name={sourceLabel(source)} radius={[8, 8, 0, 0]}>
+                {dowData.map((_, i) => (
+                  <Cell key={i} fill={i >= 5 ? '#22d3ee' : chartColor} />
                 ))}
               </Bar>
             </BarChart>
@@ -363,26 +497,56 @@ function OverviewTab({ selectedYear }: { selectedYear: string }) {
 }
 
 /* ═══════════ ANALYSIS TAB ═══════════ */
-function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: string; selectedSeason: string }) {
+function AnalysisTab({ source, season, year, filterLabels }: { source: string; season: string; year: string; filterLabels: string[] }) {
+  // Hourly — filtered by source
   const filteredHourly = useMemo(() => {
-    if (selectedSource === 'all') return hourlyAvg.map(h => ({ ...h, display: h.production }));
-    const key = selectedSource.toLowerCase() as 'wind' | 'solar';
-    return hourlyAvg.map(h => ({ ...h, display: h[key] }));
-  }, [selectedSource]);
+    return hourlyAvg.map(h => ({
+      ...h,
+      display: getSourceValue(h, source),
+    }));
+  }, [source]);
 
+  // Seasonal — filtered by season AND source
   const filteredSeasonal = useMemo(() => {
-    if (selectedSeason === 'all') return seasonalStats;
-    return seasonalStats.filter(s => s.season === selectedSeason);
-  }, [selectedSeason]);
+    let data = seasonalStats.map(s => ({
+      season: s.season,
+      value: getSourceValue({ production: s.mean, wind: s.wind, solar: s.solar }, source),
+      cv: s.cv,
+      std: s.std,
+      mean: s.mean,
+    }));
+    if (season !== 'all') {
+      data = data.filter(d => d.season === season);
+    }
+    return data;
+  }, [source, season]);
+
+  // YoY — filtered by year
+  const displayedYears = useMemo(() => {
+    if (year === 'all') return years;
+    return [Number(year)];
+  }, [year]);
+
+  // Monthly Wind vs Solar — filtered by source AND season
+  const filteredMonthlyVs = useMemo(() => {
+    let data = monthlyAvg;
+    if (season !== 'all') {
+      const months = seasonMonths[season];
+      data = data.filter(d => months.includes(d.month));
+    }
+    return data;
+  }, [season]);
+
+  const chartColor = source === 'Wind' ? '#3b82f6' : source === 'Solar' ? '#f59e0b' : '#8b5cf6';
 
   return (
     <div className="space-y-6">
-      {/* Hourly Pattern */}
+      {/* Hourly Wind vs Solar + Filtered Hourly */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card chart-container">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Clock className="w-5 h-5 text-purple-400" />
-            Hourly Production: Wind vs Solar
+            Hourly: Wind vs Solar
           </h2>
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -398,42 +562,50 @@ function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: strin
             </ResponsiveContainer>
           </div>
           <p className="text-xs text-slate-400 mt-2 text-center">
-            Solar follows a bell curve peaking at 13:00 · Wind stays relatively flat across hours
+            Solar bell curve peaks at 13:00 · Wind stays flat ~5,000-5,600 MWh
           </p>
         </div>
 
         <div className="glass-card chart-container">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
             <Activity className="w-5 h-5 text-green-400" />
-            Overall Hourly Pattern {selectedSource !== 'all' ? `(${selectedSource})` : ''}
+            Hourly Pattern — {sourceLabel(source)}
           </h2>
+          <FilterBadges filters={filterLabels.filter(f => f.startsWith('Source'))} />
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={filteredHourly}>
                 <defs>
                   <linearGradient id="hourlyGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                    <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="hour" tick={{ fontSize: 10, fill: '#94a3b8' }} interval={2} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${(v / 1e3).toFixed(0)}K`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="display" name="Avg Production" stroke="#8b5cf6" strokeWidth={2.5} fill="url(#hourlyGrad)" />
+                <Area type="monotone" dataKey="display" name={sourceLabel(source)} stroke={chartColor} strokeWidth={2.5} fill="url(#hourlyGrad)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-xs text-slate-400 mt-2 text-center">
+            {source === 'Solar' ? 'Solar output is zero at night, peaks at 11,800 MWh at 13:00'
+              : source === 'Wind' ? 'Wind output stays stable ~5,000-5,600 MWh across all hours'
+              : 'Select a source filter to see individual hourly patterns'
+            }
+          </p>
         </div>
       </div>
 
-      {/* Seasonal + Source Comparison */}
+      {/* Seasonal + Radar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card chart-container">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
             <Snowflake className="w-5 h-5 text-cyan-400" />
-            Seasonal Production {selectedSeason !== 'all' ? `(${selectedSeason})` : ''}
+            Seasonal Production — {sourceLabel(source)}
           </h2>
+          <FilterBadges filters={filterLabels.filter(f => f.startsWith('Source') || f.startsWith('Season'))} />
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={filteredSeasonal}>
@@ -441,7 +613,7 @@ function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: strin
                 <XAxis dataKey="season" tick={{ fontSize: 12, fill: '#94a3b8' }} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${(v / 1e3).toFixed(1)}K`} />
                 <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="mean" name="Mean Production" radius={[8, 8, 0, 0]}>
+                <Bar dataKey="value" name={sourceLabel(source)} radius={[8, 8, 0, 0]}>
                   {filteredSeasonal.map((s, i) => (
                     <Cell key={i} fill={SEASON_COLORS[s.season] || '#64748b'} />
                   ))}
@@ -450,14 +622,19 @@ function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: strin
             </ResponsiveContainer>
           </div>
           <p className="text-xs text-slate-400 mt-2 text-center">
-            Winter leads at 7,342 MWh avg — 49% higher than Summer (4,911 MWh)
+            {season !== 'all'
+              ? `${season}: ${filteredSeasonal[0]?.value.toLocaleString()} MWh (${sourceLabel(source)})`
+              : source === 'Solar'
+              ? 'Solar peaks in Summer (5,960 MWh) — opposite of Wind'
+              : 'Winter leads at 7,342 MWh avg — 49% above Summer'
+            }
           </p>
         </div>
 
         <div className="glass-card chart-container">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Wind className="w-5 h-5 text-blue-400" />
-            Source Production Comparison
+            Source Comparison Radar
           </h2>
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -471,8 +648,12 @@ function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: strin
                 <PolarGrid stroke="#1e293b" />
                 <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: '#94a3b8' }} />
                 <PolarRadiusAxis tick={{ fontSize: 9, fill: '#64748b' }} />
-                <Radar name="Wind" dataKey="Wind" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.25} />
-                <Radar name="Solar" dataKey="Solar" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} />
+                {(source === 'all' || source === 'Wind') && (
+                  <Radar name="Wind" dataKey="Wind" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.25} />
+                )}
+                {(source === 'all' || source === 'Solar') && (
+                  <Radar name="Solar" dataKey="Solar" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} />
+                )}
                 <Legend />
                 <Tooltip />
               </RadarChart>
@@ -484,10 +665,11 @@ function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: strin
       {/* YoY + Monthly Wind vs Solar */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="glass-card chart-container">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-rose-400" />
-            Year-over-Year Monthly Comparison
+            Year-over-Year Comparison
           </h2>
+          <FilterBadges filters={filterLabels.filter(f => f.startsWith('Year'))} />
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={yoyComparison}>
@@ -496,57 +678,72 @@ function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: strin
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${(v / 1e3).toFixed(0)}K`} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                {years.map((yr, i) => (
+                {displayedYears.map((yr, i) => (
                   <Line key={yr} type="monotone" dataKey={String(yr)} name={String(yr)}
-                    stroke={CHART_COLORS[i]} strokeWidth={2} dot={{ r: 2.5 }} />
+                    stroke={CHART_COLORS[year === 'all' ? i : 0]}
+                    strokeWidth={year === 'all' ? 2 : 3}
+                    dot={{ r: year === 'all' ? 2.5 : 4 }} />
                 ))}
               </LineChart>
             </ResponsiveContainer>
           </div>
           <p className="text-xs text-slate-400 mt-2 text-center">
-            2023+ consistently outperforms prior years across all months
+            {year !== 'all'
+              ? `Showing ${year} monthly pattern — select "All Years" to compare`
+              : '2023+ consistently outperforms prior years across all months'
+            }
           </p>
         </div>
 
         <div className="glass-card chart-container">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
             <Sun className="w-5 h-5 text-amber-400" />
-            Monthly Production: Wind vs Solar
+            Monthly: Wind vs Solar{season !== 'all' ? ` · ${season}` : ''}
           </h2>
+          <FilterBadges filters={filterLabels.filter(f => f.startsWith('Source') || f.startsWith('Season'))} />
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyAvg}>
+              <BarChart data={filteredMonthlyVs}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#94a3b8' }} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${(v / 1e3).toFixed(0)}K`} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                <Bar dataKey="wind" name="Wind" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="solar" name="Solar" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                {(source === 'all' || source === 'Wind') && (
+                  <Bar dataKey="wind" name="Wind" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                )}
+                {(source === 'all' || source === 'Solar') && (
+                  <Bar dataKey="solar" name="Solar" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                )}
               </BarChart>
             </ResponsiveContainer>
           </div>
           <p className="text-xs text-slate-400 mt-2 text-center">
-            Wind peaks in winter (Feb/Dec) · Solar is steadier but peaks slightly in summer
+            {source === 'Wind' ? 'Wind peaks in winter (Feb/Dec)'
+              : source === 'Solar' ? 'Solar peaks slightly in summer (Jul/Aug)'
+              : 'Wind dominates in winter, Solar steadier across months'
+            }
+            {season !== 'all' ? ` — showing ${season} months only` : ''}
           </p>
         </div>
       </div>
 
-      {/* Variability Analysis */}
+      {/* Variability */}
       <div className="glass-card chart-container">
-        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+        <h2 className="text-lg font-semibold mb-1 flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-rose-400" />
-          Seasonal Variability (Coefficient of Variation %)
+          Seasonal Variability (CV %)
         </h2>
+        <FilterBadges filters={filterLabels.filter(f => f.startsWith('Season'))} />
         <div className="h-[260px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={seasonalStats} layout="vertical">
+            <BarChart data={filteredSeasonal} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis type="number" tick={{ fontSize: 11, fill: '#94a3b8' }} domain={[50, 70]} tickFormatter={(v) => `${v}%`} />
               <YAxis type="category" dataKey="season" tick={{ fontSize: 12, fill: '#94a3b8' }} width={80} />
               <Tooltip formatter={(v: any) => `${v}%`} />
               <Bar dataKey="cv" name="CV %" radius={[0, 8, 8, 0]}>
-                {seasonalStats.map((s, i) => (
+                {filteredSeasonal.map((s, i) => (
                   <Cell key={i} fill={SEASON_COLORS[s.season]} />
                 ))}
               </Bar>
@@ -554,7 +751,10 @@ function AnalysisTab({ selectedSource, selectedSeason }: { selectedSource: strin
           </ResponsiveContainer>
         </div>
         <p className="text-xs text-slate-400 mt-2 text-center">
-          All seasons show similar CV (~58-66%) — variability is inherent to renewable energy, not season-specific
+          {season !== 'all'
+            ? `${season}: CV = ${filteredSeasonal[0]?.cv}%`
+            : 'All seasons ~58-66% CV — variability is inherent to renewables'
+          }
         </p>
       </div>
     </div>
@@ -621,7 +821,7 @@ function ForecastingTab() {
         <div className="glass-card chart-container">
           <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Activity className="w-5 h-5 text-purple-400" />
-            RMSE vs MAE Comparison
+            RMSE vs MAE
           </h2>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -639,42 +839,42 @@ function ForecastingTab() {
         </div>
       </div>
 
-      {/* Model Summary Panel */}
+      {/* Summary Panel */}
       <div className="glass-card p-6">
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <Award className="w-5 h-5 text-amber-400" />
-          Model Summary & Recommendations
+          Model Summary &amp; Recommendations
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-green-400">Best Model</h3>
             <p className="text-2xl font-bold">{bestModel.model}</p>
-            <p className="text-xs text-slate-400">Deep learning with 2-layer LSTM (64 units each). Captures non-linear temporal dependencies in energy production data.</p>
+            <p className="text-xs text-slate-400">Deep learning with 2-layer LSTM (64 units). Captures non-linear temporal dependencies.</p>
           </div>
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-blue-400">Training Details</h3>
             <ul className="text-sm text-slate-300 space-y-1">
-              <li>• {summaryStats.days.toLocaleString()} days of daily data</li>
+              <li>• {summaryStats.days.toLocaleString()} days of data</li>
               <li>• 60-day test period</li>
               <li>• 60-step lookback window</li>
-              <li>• 15 epochs, batch size 32</li>
+              <li>• 15 epochs, batch 32</li>
               <li>• Adam optimizer, MSE loss</li>
             </ul>
           </div>
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-purple-400">Recommendations</h3>
             <ul className="text-sm text-slate-300 space-y-1">
-              <li>• Use <strong>Prophet</strong> for interpretable forecasts</li>
-              <li>• Use <strong>LSTM</strong> for highest accuracy</li>
+              <li>• <strong>Prophet</strong> for interpretability</li>
+              <li>• <strong>LSTM</strong> for best accuracy</li>
               <li>• Consider ensemble of both</li>
-              <li>• Add weather data for improvement</li>
-              <li>• Retrain monthly for best results</li>
+              <li>• Add weather data</li>
+              <li>• Retrain monthly</li>
             </ul>
           </div>
         </div>
       </div>
 
-      {/* Performance Improvement Visualization */}
+      {/* Improvement Chart */}
       <div className="glass-card chart-container">
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-green-400" />
@@ -683,21 +883,21 @@ function ForecastingTab() {
         <div className="h-[260px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={[
-              { metric: 'RMSE Reduction', 'ARIMA→Prophet': 36, 'Prophet→LSTM': 15 },
-              { metric: 'MAE Reduction', 'ARIMA→Prophet': 39, 'Prophet→LSTM': 19 },
+              { metric: 'RMSE Reduction', 'ARIMA to Prophet': 36, 'Prophet to LSTM': 15 },
+              { metric: 'MAE Reduction', 'ARIMA to Prophet': 39, 'Prophet to LSTM': 19 },
             ]} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis type="number" tick={{ fontSize: 11, fill: '#94a3b8' }} tickFormatter={(v) => `${v}%`} domain={[0, 50]} />
               <YAxis type="category" dataKey="metric" tick={{ fontSize: 12, fill: '#94a3b8' }} width={120} />
               <Tooltip formatter={(v: any) => `${v}%`} />
               <Legend />
-              <Bar dataKey="ARIMA→Prophet" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
-              <Bar dataKey="Prophet→LSTM" fill="#10b981" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="ARIMA to Prophet" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="Prophet to LSTM" fill="#10b981" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
         <p className="text-xs text-slate-400 mt-2 text-center">
-          Prophet reduces ARIMA error by 36% · LSTM further reduces Prophet error by 15% · Total ARIMA→LSTM improvement: 46%
+          Prophet cuts ARIMA error by 36% · LSTM further reduces by 15% · Total: 46% improvement
         </p>
       </div>
     </div>

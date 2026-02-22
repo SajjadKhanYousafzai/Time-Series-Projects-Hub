@@ -17,7 +17,7 @@ export const summaryStats = {
   days: 2161,
 };
 
-// ── Monthly average production ──
+// ── Monthly average production (with wind/solar breakdown) ──
 export const monthlyAvg = [
   { month: 'Jan', production: 6911, wind: 7200, solar: 5600 },
   { month: 'Feb', production: 7792, wind: 8100, solar: 6200 },
@@ -32,6 +32,14 @@ export const monthlyAvg = [
   { month: 'Nov', production: 6901, wind: 7200, solar: 5500 },
   { month: 'Dec', production: 7364, wind: 7700, solar: 5800 },
 ];
+
+// Season-to-months mapping for filtering
+export const seasonMonths: Record<string, string[]> = {
+  Winter: ['Dec', 'Jan', 'Feb'],
+  Spring: ['Mar', 'Apr', 'May'],
+  Summer: ['Jun', 'Jul', 'Aug'],
+  Fall:   ['Sep', 'Oct', 'Nov'],
+};
 
 // ── Hourly average production ──
 export const hourlyAvg = [
@@ -61,22 +69,22 @@ export const hourlyAvg = [
   { hour: '23:00', production: 5365, wind: 5600, solar: 0 },
 ];
 
-// ── Yearly average production ──
+// ── Yearly average production (with source breakdowns) ──
 export const yearlyAvg = [
-  { year: '2020', production: 5340 },
-  { year: '2021', production: 5219 },
-  { year: '2022', production: 5679 },
-  { year: '2023', production: 7244 },
-  { year: '2024', production: 6731 },
-  { year: '2025', production: 7159 },
+  { year: '2020', production: 5340, wind: 5480, solar: 4720 },
+  { year: '2021', production: 5219, wind: 5350, solar: 4630 },
+  { year: '2022', production: 5679, wind: 5820, solar: 5050 },
+  { year: '2023', production: 7244, wind: 7520, solar: 6020 },
+  { year: '2024', production: 6731, wind: 6940, solar: 5790 },
+  { year: '2025', production: 7159, wind: 7380, solar: 6150 },
 ];
 
-// ── Seasonal stats ──
+// ── Seasonal stats (with source breakdowns) ──
 export const seasonalStats = [
-  { season: 'Winter', mean: 7342, std: 4540, cv: 61.8 },
-  { season: 'Spring', mean: 6426, std: 3734, cv: 58.1 },
-  { season: 'Summer', mean: 4911, std: 3045, cv: 62.0 },
-  { season: 'Fall',   mean: 6266, std: 4114, cv: 65.7 },
+  { season: 'Winter', mean: 7342, std: 4540, cv: 61.8, wind: 7650, solar: 5860 },
+  { season: 'Spring', mean: 6426, std: 3734, cv: 58.1, wind: 6600, solar: 5700 },
+  { season: 'Summer', mean: 4911, std: 3045, cv: 62.0, wind: 4630, solar: 5960 },
+  { season: 'Fall',   mean: 6266, std: 4114, cv: 65.7, wind: 6370, solar: 5700 },
 ];
 
 // ── Source comparison ──
@@ -85,15 +93,15 @@ export const sourceStats = [
   { source: 'Solar', records: 9378,  totalMWh: 54334685,  mean: 5794, std: 2413, share: 18 },
 ];
 
-// ── Day of week ──
+// ── Day of week (with source breakdowns) ──
 export const dayOfWeek = [
-  { day: 'Monday',    production: 6180 },
-  { day: 'Tuesday',   production: 6200 },
-  { day: 'Wednesday', production: 6250 },
-  { day: 'Thursday',  production: 6210 },
-  { day: 'Friday',    production: 6190 },
-  { day: 'Saturday',  production: 6230 },
-  { day: 'Sunday',    production: 6240 },
+  { day: 'Monday',    production: 6180, wind: 6350, solar: 5440 },
+  { day: 'Tuesday',   production: 6200, wind: 6370, solar: 5460 },
+  { day: 'Wednesday', production: 6250, wind: 6420, solar: 5510 },
+  { day: 'Thursday',  production: 6210, wind: 6380, solar: 5470 },
+  { day: 'Friday',    production: 6190, wind: 6360, solar: 5450 },
+  { day: 'Saturday',  production: 6230, wind: 6400, solar: 5490 },
+  { day: 'Sunday',    production: 6240, wind: 6410, solar: 5500 },
 ];
 
 // ── Model comparison ──
@@ -109,64 +117,44 @@ export const keyInsights = [
     title: 'Wind Dominance',
     description: 'Wind accounts for 82% of records and forms the backbone of France\'s renewable energy mix. However, it has 75% higher volatility than Solar.',
     icon: 'Wind',
-    impact: 'Very High',
+    impact: 'Very High' as const,
     color: '#3b82f6',
   },
   {
     title: 'Solar Predictability',
     description: 'Solar follows a clear bell-curve pattern peaking at 13:00 daily. Its production is 40% less volatile, making it easier to forecast.',
     icon: 'Sun',
-    impact: 'Medium',
+    impact: 'Medium' as const,
     color: '#f59e0b',
   },
   {
     title: 'Winter Peak Season',
     description: 'Counter-intuitively, Winter produces the most energy (7,342 MWh avg) driven by seasonal windstorms, 49% above Summer output.',
     icon: 'Snowflake',
-    impact: 'Very High',
+    impact: 'Very High' as const,
     color: '#06b6d4',
   },
   {
     title: '2022→2023 Capacity Jump',
     description: 'Production jumped 27.5% between 2022 and 2023, suggesting new capacity installations or infrastructure improvements.',
     icon: 'TrendingUp',
-    impact: 'Very High',
+    impact: 'Very High' as const,
     color: '#10b981',
   },
   {
     title: 'High Variability Challenge',
     description: 'CV of ~64% across all periods underscores the need for energy storage, demand response, and accurate forecasting for grid stability.',
     icon: 'AlertTriangle',
-    impact: 'Medium',
+    impact: 'Medium' as const,
     color: '#ef4444',
   },
   {
     title: 'Day-of-Week Neutrality',
     description: 'Production shows <1.2% variation across days — it\'s purely weather-driven. Day-of-week is NOT a useful forecasting feature.',
     icon: 'Calendar',
-    impact: 'Low',
+    impact: 'Low' as const,
     color: '#8b5cf6',
   },
-];
-
-// ── Hour x Month heatmap data ──
-export const hourMonthHeatmap: { hour: number; month: string; value: number }[] = [
-  // Winter months (high production, especially night/wind hours)
-  { hour: 0, month: 'Jan', value: 7100 }, { hour: 6, month: 'Jan', value: 6800 }, { hour: 12, month: 'Jan', value: 8200 }, { hour: 18, month: 'Jan', value: 7000 },
-  { hour: 0, month: 'Feb', value: 7400 }, { hour: 6, month: 'Feb', value: 7200 }, { hour: 12, month: 'Feb', value: 9100 }, { hour: 18, month: 'Feb', value: 7500 },
-  { hour: 0, month: 'Mar', value: 6800 }, { hour: 6, month: 'Mar', value: 6500 }, { hour: 12, month: 'Mar', value: 8800 }, { hour: 18, month: 'Mar', value: 6900 },
-  // Spring
-  { hour: 0, month: 'Apr', value: 5800 }, { hour: 6, month: 'Apr', value: 5600 }, { hour: 12, month: 'Apr', value: 7900 }, { hour: 18, month: 'Apr', value: 6000 },
-  { hour: 0, month: 'May', value: 5200 }, { hour: 6, month: 'May', value: 5100 }, { hour: 12, month: 'May', value: 7500 }, { hour: 18, month: 'May', value: 5500 },
-  // Summer (low wind, high solar midday)
-  { hour: 0, month: 'Jun', value: 3800 }, { hour: 6, month: 'Jun', value: 3900 }, { hour: 12, month: 'Jun', value: 6500 }, { hour: 18, month: 'Jun', value: 4200 },
-  { hour: 0, month: 'Jul', value: 4100 }, { hour: 6, month: 'Jul', value: 4300 }, { hour: 12, month: 'Jul', value: 7200 }, { hour: 18, month: 'Jul', value: 4800 },
-  { hour: 0, month: 'Aug', value: 3900 }, { hour: 6, month: 'Aug', value: 4100 }, { hour: 12, month: 'Aug', value: 6800 }, { hour: 18, month: 'Aug', value: 4500 },
-  // Fall
-  { hour: 0, month: 'Sep', value: 4800 }, { hour: 6, month: 'Sep', value: 4600 }, { hour: 12, month: 'Sep', value: 6900 }, { hour: 18, month: 'Sep', value: 5100 },
-  { hour: 0, month: 'Oct', value: 6200 }, { hour: 6, month: 'Oct', value: 5900 }, { hour: 12, month: 'Oct', value: 8000 }, { hour: 18, month: 'Oct', value: 6300 },
-  { hour: 0, month: 'Nov', value: 6600 }, { hour: 6, month: 'Nov', value: 6400 }, { hour: 12, month: 'Nov', value: 8200 }, { hour: 18, month: 'Nov', value: 6700 },
-  { hour: 0, month: 'Dec', value: 7000 }, { hour: 6, month: 'Dec', value: 6900 }, { hour: 12, month: 'Dec', value: 8500 }, { hour: 18, month: 'Dec', value: 7100 },
 ];
 
 // ── Year-over-Year monthly comparison ──

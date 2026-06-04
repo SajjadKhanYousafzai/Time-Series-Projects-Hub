@@ -105,6 +105,17 @@ Comprehensive model assessment using industry-standard metrics: RMSE, MAE, MAPE,
 - **Real-time Prediction**: Streaming data processing and live forecasting
 - *...and more projects added regularly*
 
+### 🆕 **New / Recently Added Projects**
+> Projects recently added to this repository (workspace folders)
+
+- **Airlines Flights Price Prediction**: [Airlines_Flights_Price_Prediction](Airlines_Flights_Price_Prediction/) — flight price forecasting with backend, dashboard, and modeling notebooks.
+- **Hospitality Employees — Time Series Dataset Project**: [Hospitality Employees - Time Series Dataset Project](Hospitality Employees - Time Series Dataset Project/) — workforce time-series analysis and visualization.
+- **Hourly Energy Consumption**: [Hourly Energy Consumption Time Serires](Hourly Energy Consumption Time Serires/) — multiple utility datasets and notebooks for load forecasting.
+- **Kalimati Tarkari (Fruits & Vegetables Price)**: [Kalimati Tarkari Dataset Fruits, Vegetables Price](Kalimati Tarkari Dataset Fruits, Vegetables Price/) — price forecasting, API, and dashboard.
+- **StoreSales Time Series Forecasting**: [StoreSales Time Series Forecasting](StoreSales Time Series Forecasting/) — retail sales forecasting projects and dashboards.
+- **Top 50 Crypto Daily Prices & Market Metrics**: [Top 50 Crypto Daily Prices & Market Metrics Project](Top 50 Crypto Daily Prices & Market Metrics Project/) — crypto price and market metric analysis.
+- **Wind & Solar Energy Production**: [Wind & Solar Energy Production](Wind & Solar Energy Production/) — renewable production forecasting and datasets.
+
 ---
 
 ## 🛠️ Technology Stack

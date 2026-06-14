@@ -397,8 +397,3 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=100&section=footer&text=Made%20with%20%E2%9D%A4%EF%B8%8F%20by%20Sajjad%20Khan%20Yousafzai&fontSize=20&fontColor=ffffff&animation=fadeIn" width="100%"/>
 
 </div>
-'''
-
-
-print("✅ Enhanced README saved successfully!")
-print(f"📄 File size: {len(readme_content)} characters")

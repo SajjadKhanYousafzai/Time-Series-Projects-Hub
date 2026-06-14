@@ -1,213 +1,329 @@
-# 📈 Time Series Projects Hub
 
-<div align="center">
+readme_content = '''<div align="center">
 
-![Time Series Banner](https://img.shields.io/badge/Focus-Time%20Series%20Analysis-blue?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+<!-- Animated Header with Gradient -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=200&section=header&text=Time%20Series%20Projects%20Hub&fontSize=45&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=End-to-End%20Forecasting%20%7C%20Analysis%20%7C%20Predictive%20Modeling&descAlignY=55&descSize=18" width="100%"/>
 
-**A comprehensive collection of end-to-end Time Series forecasting, analysis, and predictive modeling projects**
+<!-- Dynamic Badges -->
+<p align="center">
+  <img src="https://img.shields.io/badge/Focus-Time%20Series%20Analysis-667eea?style=for-the-badge&logo=chart-line&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Status-Active%20Development-00C853?style=for-the-badge&logo=vercel&logoColor=white"/>
+  <img src="https://img.shields.io/badge/License-MIT-FF6B6B?style=for-the-badge&logo=opensourceinitiative&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Python-3.8%2B-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+</p>
 
-[🎯 Features](#-key-features) • [📊 Projects](#-projects-portfolio) • [🛠️ Tech Stack](#-technology-stack) • [🚀 Getting Started](#-getting-started) • [📫 Contact](#-connect-with-me)
+<!-- Animated Typing Effect -->
+<a href="https://git.io/typing-svg">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=667EEA&center=true&vCenter=true&width=800&lines=Temporal+Data+Analysis+%7C+Statistical+Forecasting;Deep+Learning+Models+%7C+Production+Pipelines;Financial+Markets+%7C+Energy+Grid+%7C+Climate+Science" alt="Typing SVG"/>
+</a>
 
 </div>
 
 ---
 
-## 🎯 About This Repository
+<!-- Table of Contents with Icons -->
+## 📑 Navigation
 
-Welcome to the **Time Series Projects Hub** – a curated portfolio showcasing expertise in temporal data analysis and forecasting. This repository demonstrates practical applications of time series methodologies across diverse domains, from financial markets to environmental monitoring.
-
-### 💡 Purpose
-
-- **Portfolio Development**: Showcase production-ready time series solutions
-- **Knowledge Sharing**: Provide well-documented, reproducible projects
-- **Best Practices**: Demonstrate industry-standard approaches to temporal data challenges
-- **Continuous Learning**: Explore cutting-edge forecasting techniques and tools
+<p align="center">
+  <a href="#-about"><img src="https://img.shields.io/badge/About-FF6B6B?style=flat-square&logo=aboutdotme&logoColor=white"/></a>
+  <a href="#-key-features"><img src="https://img.shields.io/badge/Features-667EEA?style=flat-square&logo=sparkles&logoColor=white"/></a>
+  <a href="#-projects-portfolio"><img src="https://img.shields.io/badge/Projects-00C853?style=flat-square&logo=folder&logoColor=white"/></a>
+  <a href="#-tech-stack"><img src="https://img.shields.io/badge/Tech_Stack-764BA2?style=flat-square&logo=stackshare&logoColor=white"/></a>
+  <a href="#-getting-started"><img src="https://img.shields.io/badge/Getting_Started-FF9800?style=flat-square&logo=rocket&logoColor=white"/></a>
+  <a href="#-connect"><img src="https://img.shields.io/badge/Connect-2196F3?style=flat-square&logo=linkedin&logoColor=white"/></a>
+</p>
 
 ---
 
-## 🌟 Key Features
+## 🎯 About
+
+<div align="center">
+
+> **A curated portfolio of production-ready time series solutions** demonstrating expertise in temporal data analysis, statistical forecasting, and predictive modeling across diverse domains.
+
+</div>
+
+This repository serves as a comprehensive knowledge base for:
+
+| Objective | Description |
+|-----------|-------------|
+| 🎓 **Portfolio Development** | Production-ready forecasting solutions with clean, documented code |
+| 📚 **Knowledge Sharing** | Reproducible projects with comprehensive methodology explanations |
+| 🏆 **Best Practices** | Industry-standard approaches to temporal data challenges |
+| 🚀 **Continuous Learning** | Exploration of cutting-edge forecasting techniques |
+
+---
+
+## ✨ Key Features
+
+<div align="center">
 
 <table>
 <tr>
-<td width="50%">
+<td width="50%" valign="top">
 
-### 🔄 **End-to-End Pipelines**
-Complete workflows from data ingestion to model deployment, including data preprocessing, feature engineering, and production-ready code.
+### 🔄 End-to-End Pipelines
+
+```
+Data Ingestion → Preprocessing → Feature Engineering 
+    → Modeling → Evaluation → Deployment
+```
+
+Complete workflows with production-ready code, automated preprocessing pipelines, and modular architecture.
 
 </td>
-<td width="50%">
+<td width="50%" valign="top">
 
-### 🧠 **Advanced Modeling**
-Implementation of state-of-the-art algorithms including ARIMA, SARIMA, Prophet, LSTM, GRU, Transformer models, and ensemble methods.
+### 🧠 Advanced Modeling
+
+| Algorithm | Type | Status |
+|-----------|------|--------|
+| ARIMA / SARIMA | Statistical | ✅ Implemented |
+| Prophet / NeuralProphet | Decomposition | ✅ Implemented |
+| LSTM / GRU | Deep Learning | ✅ Implemented |
+| Transformer | Attention-Based | ✅ Implemented |
+| XGBoost / LightGBM | Ensemble | ✅ Implemented |
 
 </td>
 </tr>
 <tr>
-<td width="50%">
+<td width="50%" valign="top">
 
-### 📊 **Interactive Visualizations**
-Dynamic dashboards and compelling visualizations using Streamlit, Plotly, and Dash for intuitive data exploration.
+### 📊 Interactive Dashboards
+
+- **Streamlit** apps for rapid prototyping
+- **Plotly** visualizations with drill-down capabilities
+- **Dash** enterprise-grade dashboards
+- **Real-time** monitoring interfaces
 
 </td>
-<td width="50%">
+<td width="50%" valign="top">
 
-### 📈 **Rigorous Evaluation**
-Comprehensive model assessment using industry-standard metrics: RMSE, MAE, MAPE, and custom evaluation frameworks.
+### 📈 Rigorous Evaluation
+
+```python
+metrics = {
+    "RMSE": "Root Mean Square Error",
+    "MAE": "Mean Absolute Error", 
+    "MAPE": "Mean Absolute % Error",
+    "SMAPE": "Symmetric MAPE",
+    "Custom": "Domain-specific frameworks"
+}
+```
 
 </td>
 </tr>
 </table>
 
+</div>
+
 ---
 
-## 📊 Projects Portfolio
+## 📂 Projects Portfolio
 
-### 🌡️ **Temperature Forecasting System**
-> Predicting climate patterns using statistical and machine learning approaches
+<div align="center">
 
-- **Models**: ARIMA, SARIMA, Prophet, XGBoost
-- **Techniques**: Seasonal decomposition, trend analysis
-- **Applications**: Weather prediction, climate monitoring
+<!-- Project Cards Grid -->
 
-### ⚡ **Electricity Load Forecasting**
-> Optimizing energy grid management through demand prediction
+### 🌡️ Temperature Forecasting System
 
-- **Models**: LSTM, GRU, Prophet, hybrid approaches
-- **Techniques**: Multi-step ahead forecasting, peak load prediction
-- **Applications**: Smart grid optimization, energy trading
+<p>
+  <img src="https://img.shields.io/badge/ARIMA-FF6B6B?style=flat-square"/>
+  <img src="https://img.shields.io/badge/SARIMA-FF6B6B?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Prophet-764BA2?style=flat-square"/>
+  <img src="https://img.shields.io/badge/XGBoost-00C853?style=flat-square"/>
+</p>
 
-### 🛒 **Retail Sales Demand Forecasting**
-> Intelligent inventory management through accurate demand prediction
+> Climate pattern prediction using seasonal decomposition and trend analysis for weather monitoring applications.
 
-- **Models**: SARIMAX, XGBoost, LightGBM, ensemble methods
-- **Techniques**: Feature engineering, promotional impact analysis
-- **Applications**: Inventory optimization, supply chain management
+---
 
-### 💰 **Financial Market Prediction**
-> Forecasting stock prices and cryptocurrency trends
+### ⚡ Electricity Load Forecasting
 
-- **Models**: LSTM, Attention mechanisms, hybrid statistical-ML models
-- **Techniques**: Technical indicators, sentiment analysis integration
-- **Applications**: Trading strategies, risk management
+<p>
+  <img src="https://img.shields.io/badge/LSTM-667EEA?style=flat-square"/>
+  <img src="https://img.shields.io/badge/GRU-667EEA?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Prophet-764BA2?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Hybrid-FF9800?style=flat-square"/>
+</p>
 
-### 🌫️ **Air Quality Index (AQI) Forecasting**
-> Environmental monitoring and public health support
+> Smart grid optimization through multi-step ahead demand prediction and peak load forecasting.
 
-- **Models**: Multivariate LSTM, Prophet, Random Forest
-- **Techniques**: Multi-pollutant modeling, spatial-temporal analysis
-- **Applications**: Health alerts, policy planning
+---
 
-### 🔮 **Additional Projects**
-- **Anomaly Detection**: Identifying unusual patterns in temporal data
-- **Multivariate Forecasting**: Complex systems with interdependent variables
-- **Real-time Prediction**: Streaming data processing and live forecasting
-- *...and more projects added regularly*
+### 🛒 Retail Sales Demand Forecasting
 
-### 🆕 **New / Recently Added Projects**
-> Projects recently added to this repository (workspace folders)
+<p>
+  <img src="https://img.shields.io/badge/SARIMAX-FF6B6B?style=flat-square"/>
+  <img src="https://img.shields.io/badge/XGBoost-00C853?style=flat-square"/>
+  <img src="https://img.shields.io/badge/LightGBM-00C853?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Ensemble-FF9800?style=flat-square"/>
+</p>
 
-- **Airlines Flights Price Prediction**: [Airlines_Flights_Price_Prediction](Airlines_Flights_Price_Prediction/) — flight price forecasting with backend, dashboard, and modeling notebooks.
-- **Hospitality Employees — Time Series Dataset Project**: [Hospitality Employees - Time Series Dataset Project](Hospitality Employees - Time Series Dataset Project/) — workforce time-series analysis and visualization.
-- **Hourly Energy Consumption**: [Hourly Energy Consumption Time Serires](Hourly Energy Consumption Time Serires/) — multiple utility datasets and notebooks for load forecasting.
-- **Kalimati Tarkari (Fruits & Vegetables Price)**: [Kalimati Tarkari Dataset Fruits, Vegetables Price](Kalimati Tarkari Dataset Fruits, Vegetables Price/) — price forecasting, API, and dashboard.
-- **StoreSales Time Series Forecasting**: [StoreSales Time Series Forecasting](StoreSales Time Series Forecasting/) — retail sales forecasting projects and dashboards.
-- **Top 50 Crypto Daily Prices & Market Metrics**: [Top 50 Crypto Daily Prices & Market Metrics Project](Top 50 Crypto Daily Prices & Market Metrics Project/) — crypto price and market metric analysis.
-- **Wind & Solar Energy Production**: [Wind & Solar Energy Production](Wind & Solar Energy Production/) — renewable production forecasting and datasets.
+> Intelligent inventory management with promotional impact analysis and supply chain optimization.
+
+---
+
+### 💰 Financial Market Prediction
+
+<p>
+  <img src="https://img.shields.io/badge/LSTM-667EEA?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Attention-667EEA?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Sentiment-2196F3?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Hybrid-FF9800?style=flat-square"/>
+</p>
+
+> Stock and cryptocurrency forecasting integrating technical indicators with sentiment analysis.
+
+---
+
+### 🌫️ Air Quality Index (AQI) Forecasting
+
+<p>
+  <img src="https://img.shields.io/badge/Multivariate_LSTM-667EEA?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Prophet-764BA2?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Random_Forest-00C853?style=flat-square"/>
+</p>
+
+> Multi-pollutant environmental monitoring with spatial-temporal analysis for public health alerts.
+
+---
+
+### 🆕 Recently Added Projects
+
+</div>
+
+| Project | Domain | Key Components |
+|---------|--------|----------------|
+| ✈️ [Airlines Flights Price Prediction](Airlines_Flights_Price_Prediction/) | Travel | Backend API, Dashboard, Modeling Notebooks |
+| 🏨 [Hospitality Employees](Hospitality%20Employees%20-%20Time%20Series%20Dataset%20Project/) | Workforce | Time-series Analysis, Visualization |
+| ⚡ [Hourly Energy Consumption](Hourly%20Energy%20Consumption%20Time%20Serires/) | Utilities | Multiple Datasets, Load Forecasting |
+| 🥬 [Kalimati Tarkari (Prices)](Kalimati%20Tarkari%20Dataset%20Fruits,%20Vegetables%20Price/) | Agriculture | Price Forecasting, API, Dashboard |
+| 🏪 [StoreSales Forecasting](StoreSales%20Time%20Series%20Forecasting/) | Retail | Sales Forecasting, Dashboards |
+| ₿ [Top 50 Crypto Metrics](Top%2050%20Crypto%20Daily%20Prices%20&%20Market%20Metrics%20Project/) | Finance | Price Analysis, Market Metrics |
+| 🌬️ [Wind & Solar Energy](Wind%20&%20Solar%20Energy%20Production/) | Renewables | Production Forecasting, Datasets |
+
+<div align="center">
+
+---
+
+### 🔮 Additional Capabilities
+
+<p>
+  <img src="https://img.shields.io/badge/Anomaly_Detection-FF6B6B?style=for-the-badge&logo=shield&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Multivariate_Forecasting-667EEA?style=for-the-badge&logo=git-branch&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Real--time_Prediction-00C853?style=for-the-badge&logo=clock&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Streaming_Data-FF9800?style=for-the-badge&logo=stream&logoColor=white"/>
+</p>
+
+</div>
 
 ---
 
 ## 🛠️ Technology Stack
 
-### **Core Libraries**
-```
-📦 Data Processing & Analysis
-├── pandas, numpy, scipy
-├── statsmodels, pmdarima
-└── scikit-learn
+<div align="center">
 
-🤖 Machine Learning & Deep Learning
-├── TensorFlow, Keras
-├── PyTorch
-├── Prophet, NeuralProphet
-└── XGBoost, LightGBM, CatBoost
+### Data Processing & Analysis
 
-📊 Visualization & Dashboards
-├── Matplotlib, Seaborn
-├── Plotly, Bokeh
-├── Streamlit, Dash
-└── Altair
+<p>
+  <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white"/>
+  <img src="https://img.shields.io/badge/numpy-013243?style=for-the-badge&logo=numpy&logoColor=white"/>
+  <img src="https://img.shields.io/badge/scipy-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white"/>
+  <img src="https://img.shields.io/badge/statsmodels-667EEA?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white"/>
+</p>
 
-☁️ Deployment & MLOps
-├── Docker, FastAPI
-├── MLflow, DVC
-└── AWS/GCP services
-```
+### Machine Learning & Deep Learning
+
+<p>
+  <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Keras-D00000?style=for-the-badge&logo=keras&logoColor=white"/>
+  <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Prophet-764BA2?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/XGBoost-00C853?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/LightGBM-00C853?style=for-the-badge"/>
+</p>
+
+### Visualization & Dashboards
+
+<p>
+  <img src="https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Seaborn-4C72B0?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Plotly-3F4F75?style=for-the-badge&logo=plotly&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Dash-00A3E0?style=for-the-badge"/>
+</p>
+
+### Deployment & MLOps
+
+<p>
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MLflow-0194E2?style=for-the-badge&logo=mlflow&logoColor=white"/>
+  <img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GCP-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white"/>
+</p>
+
+</div>
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 ```bash
-Python 3.8+
-pip or conda package manager
+Python 3.8+  •  pip or conda  •  Git
 ```
 
-### Installation
+### Quick Start
 
-1. **Clone the repository**
 ```bash
+# 1. Clone the repository
 git clone https://github.com/SajjadKhanYousafzai/Time-Series-Projects-Hub.git
 cd Time-Series-Projects-Hub
-```
 
-2. **Create a virtual environment**
-```bash
+# 2. Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+source venv/bin/activate  # Windows: venv\\Scripts\\activate
 
-3. **Install dependencies**
-```bash
+# 3. Install dependencies
 pip install -r requirements.txt
-```
 
-4. **Explore projects**
-```bash
+# 4. Launch a project
 cd projects/<project-name>
 jupyter notebook
 ```
 
 ---
 
-## 📂 Repository Structure
+## 📁 Repository Structure
 
 ```
 Time-Series-Projects-Hub/
 │
-├── projects/
+├── 📂 projects/                    # Domain-specific forecasting projects
 │   ├── temperature-forecasting/
 │   ├── electricity-load-forecasting/
 │   ├── retail-demand-forecasting/
 │   ├── financial-market-prediction/
 │   └── aqi-forecasting/
 │
-├── notebooks/
+├── 📂 notebooks/                   # Exploratory analysis & EDA
 │   └── exploratory-analysis/
 │
-├── src/
-│   ├── data/
-│   ├── models/
-│   ├── utils/
-│   └── visualization/
+├── 📂 src/                         # Core library modules
+│   ├── data/                       # Data ingestion & preprocessing
+│   ├── models/                     # Model implementations
+│   ├── utils/                      # Helper functions
+│   └── visualization/              # Plotting & dashboard utilities
 │
-├── docs/
+├── 📂 docs/                        # Project documentation
 │   └── project-documentation/
 │
-├── requirements.txt
-└── README.md
+├── requirements.txt                # Python dependencies
+└── README.md                       # Project overview
 ```
 
 ---
@@ -215,23 +331,34 @@ Time-Series-Projects-Hub/
 ## 📚 Learning Resources
 
 Each project includes:
-- 📖 **Detailed Documentation**: Comprehensive explanations of methodologies
-- 💻 **Clean Code**: Well-commented, production-ready implementations
-- 📊 **Visualization**: Intuitive charts and interactive dashboards
-- 🎓 **Insights**: Key findings and lessons learned
-- 🔗 **References**: Academic papers and technical resources
+
+| Resource | Description |
+|----------|-------------|
+| 📖 **Documentation** | Comprehensive methodology explanations |
+| 💻 **Clean Code** | Well-commented, production-ready implementations |
+| 📊 **Visualizations** | Interactive charts and dashboards |
+| 🎓 **Insights** | Key findings and lessons learned |
+| 🔗 **References** | Academic papers and technical resources |
 
 ---
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](../../issues) if you want to contribute.
+Contributions are welcome! Please follow these steps:
 
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+```bash
+# 1. Fork the repository
+# 2. Create your feature branch
+git checkout -b feature/AmazingFeature
+
+# 3. Commit your changes
+git commit -m 'Add some AmazingFeature'
+
+# 4. Push to the branch
+git push origin feature/AmazingFeature
+
+# 5. Open a Pull Request
+```
 
 ---
 
@@ -239,9 +366,15 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 <div align="center">
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/yourprofile)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-black?style=for-the-badge&logo=github)](https://github.com/SajjadKhanYousafzai)
-[![Email](https://img.shields.io/badge/Email-Contact-red?style=for-the-badge&logo=gmail)](mailto:your.email@example.com)
+<a href="https://linkedin.com/in/yourprofile">
+  <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"/>
+</a>
+<a href="https://github.com/SajjadKhanYousafzai">
+  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
+</a>
+<a href="mailto:your.email@example.com">
+  <img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white"/>
+</a>
 
 </div>
 
@@ -249,14 +382,26 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+<div align="center">
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+</div>
 
 ---
 
 <div align="center">
 
-**⭐ If you find this repository helpful, please consider giving it a star!**
+### ⭐ Star this repository if you find it helpful!
 
-*Made with ❤️ by Sajjad Khan Yousafzai*
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=100&section=footer&text=Made%20with%20%E2%9D%A4%EF%B8%8F%20by%20Sajjad%20Khan%20Yousafzai&fontSize=20&fontColor=ffffff&animation=fadeIn" width="100%"/>
 
 </div>
+'''
+
+# Save the enhanced README
+with open('/mnt/agents/output/README_Enhanced.md', 'w', encoding='utf-8') as f:
+    f.write(readme_content)
+
+print("✅ Enhanced README saved successfully!")
+print(f"📄 File size: {len(readme_content)} characters")

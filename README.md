@@ -399,9 +399,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 </div>
 '''
 
-# Save the enhanced README
-with open('/mnt/agents/output/README_Enhanced.md', 'w', encoding='utf-8') as f:
-    f.write(readme_content)
 
 print("✅ Enhanced README saved successfully!")
 print(f"📄 File size: {len(readme_content)} characters")

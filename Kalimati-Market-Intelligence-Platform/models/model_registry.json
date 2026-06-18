@@ -1,0 +1,37 @@
+{
+  "exported_at": "2026-01-25 18:32:22",
+  "models": {
+    "xgboost": {
+      "path": "models/xgb_model.pkl",
+      "size_mb": 0.6413688659667969,
+      "commodity": "Tomato Big(Nepali)",
+      "exported_at": "2026-01-25 18:32:22"
+    },
+    "lightgbm": {
+      "path": "models/lgbm_model.pkl",
+      "size_mb": 0.2661628723144531,
+      "commodity": "Tomato Big(Nepali)",
+      "exported_at": "2026-01-25 18:32:22"
+    },
+    "lstm": {
+      "model_path": "models/lstm_model.h5",
+      "scaler_path": "models/lstm_scaler.pkl",
+      "model_size_mb": 0.3951873779296875,
+      "scaler_size_mb": 0.0009298324584960938,
+      "lookback": 30,
+      "commodity": "Tomato Big(Nepali)",
+      "exported_at": "2026-01-25 18:32:22"
+    },
+    "sarima": {
+      "path": "models/sarima_model.pkl",
+      "size_mb": 147.9949197769165,
+      "order": "(1,1,1)",
+      "seasonal_order": "(1,1,1,7)",
+      "commodity": "Tomato Big(Nepali)",
+      "exported_at": "2026-01-25 18:32:22"
+    }
+  },
+  "total_models": 4,
+  "notebook_version": "1.0",
+  "commodity": "Tomato Big(Nepali)"
+}

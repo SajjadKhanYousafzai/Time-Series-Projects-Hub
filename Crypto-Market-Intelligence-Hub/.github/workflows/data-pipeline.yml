@@ -1,0 +1,63 @@
+name: Data Pipeline
+
+on:
+  schedule:
+    - cron: "0 6 * * *"      # Daily at 06:00 UTC
+  workflow_dispatch:          # Manual trigger
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  fetch-and-process:
+    name: Fetch Latest Crypto Data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install yfinance pyarrow
+
+      - name: Fetch latest prices via yfinance
+        env:
+          DATA_PATH: data/raw
+        run: |
+          python - <<'EOF'
+          from pathlib import Path
+          from src.data.fetch import fetch_yfinance, COINGECKO_TO_YFINANCE
+          import pandas as pd
+
+          out_dir = Path("data/raw")
+          out_dir.mkdir(parents=True, exist_ok=True)
+
+          for asset in COINGECKO_TO_YFINANCE:
+              try:
+                  df = fetch_yfinance(asset, period="max")
+                  dest = out_dir / f"{asset}.csv"
+                  df.to_csv(dest, index=False)
+                  print(f"✅ {asset}: {len(df)} rows → {dest}")
+              except Exception as e:
+                  print(f"⚠️  {asset}: {e}")
+          EOF
+
+      - name: Run processing pipeline
+        run: python scripts/run_all.py
+
+      - name: Commit updated data
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/raw/ notebooks/experiments/
+          git diff --staged --quiet || git commit -m "chore: update raw data [skip ci] $(date -u +%Y-%m-%d)"
+          git push

@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #0a0e1a;
+    --foreground: #e2e8f0;
+    --primary: #00d4ff;
+    --accent: #7c3aed;
+    --success: #00ff88;
+    --danger: #ff4466;
+    --border: #2d3561;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-slate-100;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0f1629; }
+  ::-webkit-scrollbar-thumb { background: #2d3561; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #00d4ff; }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-background-card border border-border rounded-2xl shadow-card backdrop-blur-sm;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+  }
+
+  .metric-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-background font-semibold px-6 py-2.5 rounded-xl
+           hover:shadow-glow-blue hover:scale-105 transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply border border-border text-slate-300 font-medium px-5 py-2 rounded-xl
+           hover:border-primary hover:text-primary transition-all duration-200;
+  }
+
+  .nav-link {
+    @apply text-muted hover:text-primary transition-colors duration-150 font-medium;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(45, 53, 97, 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(45, 53, 97, 0.4) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}

@@ -59,9 +59,9 @@ def main() -> None:
     summary = summary_by_asset(df)
     summary_csv = experiments_dir / "summary_by_asset.csv"
     summary.to_csv(summary_csv, index=False)
-    logger.info("Summary written → %s", summary_csv)
+    logger.info("Summary written -> %s", summary_csv)
 
-    logger.info("Pipeline complete ✅")
+    logger.info("Pipeline complete!")
     print(summary.to_string(index=False))
 
 

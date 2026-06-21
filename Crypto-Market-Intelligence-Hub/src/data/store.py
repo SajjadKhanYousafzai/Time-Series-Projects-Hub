@@ -32,7 +32,7 @@ def save_parquet(df: pd.DataFrame, path: Path | str, *, overwrite: bool = True) 
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(dest, index=False, engine="pyarrow")
-    logger.info("Saved %d rows → %s", len(df), dest)
+    logger.info("Saved %d rows -> %s", len(df), dest)
     return dest
 
 
@@ -58,7 +58,7 @@ def load_parquet(path: Path | str) -> pd.DataFrame:
     if not src.exists():
         raise FileNotFoundError(f"Parquet file not found: {src}")
     df = pd.read_parquet(src, engine="pyarrow")
-    logger.info("Loaded %d rows ← %s", len(df), src)
+    logger.info("Loaded %d rows <- %s", len(df), src)
     return df
 
 
@@ -75,7 +75,7 @@ def save_asset_parquet(df: pd.DataFrame, processed_dir: Path | str) -> dict[str,
     Returns
     -------
     dict[str, Path]
-        Mapping of asset name → saved file path.
+        Mapping of asset name to saved file path.
     """
     base = Path(processed_dir)
     saved: dict[str, Path] = {}

@@ -20,7 +20,9 @@ COPY --from=builder /install /usr/local
 
 COPY config/ ./config/
 COPY src/ ./src/
-COPY data/ ./data/
+COPY scripts/ ./scripts/
+# NOTE: data/ is NOT baked in — it is volume-mounted at runtime
+# This allows the pipeline service to write Parquet files on first boot
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app

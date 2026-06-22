@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 
 COPY config/ ./config/
 COPY src/ ./src/
-COPY data/ ./data/
+# NOTE: data/ is volume-mounted at runtime (not baked in)
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app

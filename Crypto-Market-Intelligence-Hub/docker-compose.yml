@@ -1,6 +1,27 @@
 version: "3.9"
 
 services:
+
+  # ── Step 0: Data Pipeline (runs once, generates Parquet files) ────────────────
+  pipeline:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.api
+    container_name: crypto-hub-pipeline
+    command: ["python", "scripts/run_all.py"]
+    volumes:
+      - ./data:/app/data          # writable — pipeline writes Parquet here
+      - ./scripts:/app/scripts:ro
+      - ./config:/app/config:ro
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=production
+    networks:
+      - crypto-net
+    # Only run if processed files are absent; exits 0 on success
+    restart: "no"
+
   # ── FastAPI Backend ──────────────────────────────────────────────────────────
   api:
     build:
@@ -12,16 +33,20 @@ services:
     env_file:
       - .env
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
       - API_RELOAD=false
     volumes:
-      - ./data:/app/data:ro
+      - ./data:/app/data:ro       # read-only after pipeline ran
       - ./config:/app/config:ro
     healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/api/v1/health').raise_for_status()"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      start_period: 15s
+      retries: 5
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
     restart: unless-stopped
     networks:
       - crypto-net
@@ -53,6 +78,8 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
     restart: unless-stopped
     networks:
       - crypto-net

@@ -430,16 +430,28 @@ Full documentation: [`docs/api_reference.md`](docs/api_reference.md)
 Run the full stack with a single command:
 
 ```bash
-# Start all services (API + Dashboard + Redis)
-docker compose up --build
+# 1. Copy the environment template (REQUIRED — Docker will fail without this)
+cp .env.example .env        # then open .env and set any real API keys
 
-# Services:
-# FastAPI    → http://localhost:8000
-# Streamlit  → http://localhost:8501
-# Redis      → localhost:6379
+# 2. Start everything — pipeline runs first, then API + Dashboard
+docker compose up --build
 ```
 
-Environment variables: copy `.env.example` → `.env` and fill in your values.
+**What happens automatically:**
+1. 🔄 **`pipeline` service** runs `scripts/run_all.py` → generates all 49 Parquet files in `data/processed/`
+2. ⚡ **`api` service** starts once pipeline succeeds → FastAPI at `http://localhost:8000`
+3. 📊 **`dashboard` service** starts once API is healthy → Streamlit at `http://localhost:8501`
+4. 🔴 **`redis` service** starts in parallel → cache at `localhost:6379`
+
+```bash
+# To stop all services
+docker compose down
+
+# To also remove volumes (wipes redis cache)
+docker compose down -v
+```
+
+Environment variables: copy `.env.example` → `.env` and fill in your values (API keys, secret key, etc.)
 
 Full guide: [`docs/deployment.md`](docs/deployment.md)
 

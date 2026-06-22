@@ -1,0 +1,144 @@
+# ══════════════════════════════════════════════════════════════════
+#  Crypto Market Intelligence Hub — .gitignore
+# ══════════════════════════════════════════════════════════════════
+
+# ── SECRETS & CREDENTIALS (NEVER commit these) ─────────────────
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# ── Python ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.env/
+.conda/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# ── Test & Coverage ─────────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+nosetests.xml
+
+# ── Type checking & linting ─────────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+
+# ── Data files (large — use DVC or cloud storage instead) ───────
+# Raw CSVs are committed (small enough). Parquet files are NOT.
+data/processed/*.parquet
+data/interim/*.parquet
+data/external/*.parquet
+
+# Trained model weights (can be large)
+data/models/
+*.h5
+*.keras
+*.pkl
+*.joblib
+*.onnx
+*.pt
+*.pth
+
+# ── Logs ────────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+
+# ── OS & Editor ─────────────────────────────────────────────────
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# JetBrains / PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ── Node.js / Next.js ───────────────────────────────────────────
+node_modules/
+.next/
+out/
+.vercel/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# npm/yarn/pnpm lock files — keep package-lock.json but ignore others
+yarn.lock
+pnpm-lock.yaml
+
+# ── Docker ──────────────────────────────────────────────────────
+# Don't ignore docker-compose.yml (needed) but ignore overrides
+docker-compose.override.yml
+docker-compose.local.yml
+
+# ── MLflow / Experiment Tracking ────────────────────────────────
+mlruns/
+mlartifacts/
+
+# ── Temporary & Build Artifacts ─────────────────────────────────
+tmp/
+temp/
+.tmp/
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+.cache/
+
+# ── Reports (auto-generated — optional to commit) ───────────────
+# Comment out the line below if you WANT to commit the PDF report
+# notebooks/reports/*.pdf

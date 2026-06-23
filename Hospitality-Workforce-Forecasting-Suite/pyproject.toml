@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "hospitality-workforce-forecasting-suite"
+version = "1.0.0"
+description = "End-to-end time series forecasting for California hospitality employment"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Sajjad Khan Yousafzai" }]
+keywords = ["time-series", "forecasting", "hospitality", "sarima", "holt-winters"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "config*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "--cov=src --cov-report=term-missing --cov-report=xml -v"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+select = ["E", "W", "F", "I", "B", "C4", "UP"]
+ignore = ["E501", "B008"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+strict = false

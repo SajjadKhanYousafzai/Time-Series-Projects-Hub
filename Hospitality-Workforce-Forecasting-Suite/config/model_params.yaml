@@ -1,0 +1,38 @@
+# ── Model Hyperparameters ──────────────────────────────────────────────────────
+
+sarima:
+  order: [1, 1, 1]          # (p, d, q)
+  seasonal_order: [1, 1, 1, 12]  # (P, D, Q, s) — monthly seasonality
+  trend: "n"
+  enforce_stationarity: true
+  enforce_invertibility: true
+  auto_select: true          # use auto_arima for optimal order if true
+  auto_arima:
+    start_p: 0
+    max_p: 3
+    start_q: 0
+    max_q: 3
+    seasonal: true
+    m: 12
+    information_criterion: "aic"
+    stepwise: true
+
+holt_winters:
+  trend: "add"               # additive or multiplicative
+  seasonal: "add"            # additive (stable seasonal amplitude)
+  seasonal_periods: 12
+  damped_trend: false
+  optimized: true            # auto-fit smoothing parameters
+
+naive:
+  seasonal_period: 12        # use same month from prior year
+
+evaluation:
+  metrics: ["mae", "rmse", "mape"]
+  cv_folds: 5
+  cv_step: 12                # step size for rolling window (months)
+  train_test_ratio: 0.80
+
+forecasting:
+  horizon: 24                # months ahead for future forecasts
+  confidence_interval: 0.95  # 95% CI

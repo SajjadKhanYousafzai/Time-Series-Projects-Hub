@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'Hospitality-Workforce-Forecasting-Suite/**'
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: Hospitality-Workforce-Forecasting-Suite
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install ruff mypy
+      - run: ruff check src/ scripts/ tests/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements-dev.txt
+      - run: python scripts/run_all.py
+      - run: pytest tests/ -v --cov=src --cov-report=xml
+      - uses: codecov/codecov-action@v4
+        with:
+          file: Hospitality-Workforce-Forecasting-Suite/coverage.xml
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - run: docker compose build

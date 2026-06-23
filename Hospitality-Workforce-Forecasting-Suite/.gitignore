@@ -1,0 +1,72 @@
+# ══════════════════════════════════════════════════════════════════
+#  Hospitality Workforce Forecasting Suite — .gitignore
+# ══════════════════════════════════════════════════════════════════
+
+# ── SECRETS (NEVER commit) ──────────────────────────────────────
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+secrets/
+
+# ── Python ──────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+
+# ── Virtual environments ─────────────────────────────────────────
+.venv/
+venv/
+env/
+.conda/
+
+# ── Jupyter ──────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Data (large files) ──────────────────────────────────────────
+data/processed/*.parquet
+data/interim/
+data/external/
+data/models/
+
+# ── Logs ────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Test & Coverage ─────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ── Linting ─────────────────────────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+
+# ── OS & Editor ─────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+.idea/
+
+# ── Node / Next.js ──────────────────────────────────────────────
+node_modules/
+.next/
+out/
+.vercel/
+frontend/.env
+frontend/.env.local
+
+# ── Docker ──────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── Old structure (migrated) ────────────────────────────────────
+Dataset/
+dashboard/

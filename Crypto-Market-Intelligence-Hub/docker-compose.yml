@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   # ── Step 0: Data Pipeline (runs once, generates Parquet files) ────────────────

@@ -1,0 +1,78 @@
+services:
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.api
+    container_name: hospitality-pipeline
+    command: ["python", "scripts/run_all.py"]
+    volumes:
+      - ./data:/app/data
+      - ./scripts:/app/scripts:ro
+      - ./config:/app/config:ro
+    env_file: .env
+    environment:
+      - ENVIRONMENT=production
+    networks: [hosp-net]
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.api
+    container_name: hospitality-api
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      - ENVIRONMENT=production
+      - API_RELOAD=false
+    volumes:
+      - ./data:/app/data:ro
+      - ./config:/app/config:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 10s
+      start_period: 15s
+      retries: 5
+    depends_on:
+      pipeline:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    networks: [hosp-net]
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: deployment/docker/Dockerfile.dashboard
+    container_name: hospitality-dashboard
+    ports:
+      - "8501:8501"
+    env_file: .env
+    volumes:
+      - ./data:/app/data:ro
+      - ./config:/app/config:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: [hosp-net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: hospitality-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks: [hosp-net]
+
+networks:
+  hosp-net:
+    driver: bridge
+
+volumes:
+  redis-data:

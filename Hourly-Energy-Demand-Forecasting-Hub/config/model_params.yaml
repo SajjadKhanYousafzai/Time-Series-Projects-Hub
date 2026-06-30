@@ -1,0 +1,49 @@
+# ── Model Hyperparameters ──────────────────────────────────────────────────────
+
+arima:
+  order: [1, 1, 1]             # (p, d, q) — non-seasonal AR, I, MA
+  seasonal_order: [0, 0, 0, 0] # (P, D, Q, s) — set s=24 for daily seasonality
+  trend: "n"                   # no explicit trend constant
+  enforce_stationarity: true
+  enforce_invertibility: true
+  auto_select: false           # set to true to use auto_arima (pmdarima)
+  auto_arima:
+    start_p: 0
+    max_p: 4
+    start_q: 0
+    max_q: 4
+    seasonal: false            # seasonal ARIMA via SARIMAX adds fitting time
+    information_criterion: "aic"
+    stepwise: true
+
+xgboost:
+  n_estimators: 1000
+  max_depth: 6
+  learning_rate: 0.05
+  subsample: 0.80
+  colsample_bytree: 0.80
+  early_stopping_rounds: 50
+  objective: "reg:squarederror"
+  n_jobs: -1
+  random_state: 42
+
+lstm:
+  lookback: 168         # hours of context (1 week)
+  horizon: 24           # forecast steps
+  batch_size: 512
+  # model weights: models/{REGION}/lstm_model/ (SavedModel format)
+
+naive:
+  seasonal_period: 168  # use same hour from 1 week ago (hourly baseline)
+
+evaluation:
+  metrics: ["mae", "rmse", "mape"]
+  train_test_ratio: 0.80
+  cv_folds: 5
+  cv_test_size: 168     # 1 week of hourly data
+  cv_min_train: 2160    # 90 days minimum training
+
+forecasting:
+  horizon: 24            # default: next 24 hours
+  max_horizon: 168       # maximum allowed forecast horizon (1 week)
+  confidence_interval: 0.95

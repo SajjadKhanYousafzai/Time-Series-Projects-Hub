@@ -1,0 +1,28 @@
+# Development dependencies (not included in requirements.txt)
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=7.4.0               # Test runner
+pytest-cov>=4.1.0           # Coverage reporting
+pytest-asyncio>=0.21.0      # Async test support (for FastAPI)
+pytest-timeout>=2.1.0       # Test timeouts
+httpx>=0.24.0               # Async HTTP client for FastAPI TestClient
+
+# ── Linting & Formatting ──────────────────────────────────────────────────────
+ruff>=0.4.0                 # Fast linter + formatter (replaces black + isort + flake8)
+
+# ── Type Checking ─────────────────────────────────────────────────────────────
+mypy>=1.5.0                 # Static type checker
+pandas-stubs>=2.0.0         # Type stubs for pandas
+types-PyYAML>=6.0.0         # Type stubs for PyYAML
+
+# ── API Development ──────────────────────────────────────────────────────────
+uvicorn[standard]>=0.23.0   # ASGI server for FastAPI
+fastapi>=0.104.0            # REST API framework
+pydantic-settings>=2.0.0   # Settings management
+
+# ── Dashboard ─────────────────────────────────────────────────────────────────
+streamlit>=1.28.0           # Dashboard framework
+
+# ── Documentation ─────────────────────────────────────────────────────────────
+mkdocs>=1.5.0               # Documentation site
+mkdocs-material>=9.0.0      # Material theme for MkDocs

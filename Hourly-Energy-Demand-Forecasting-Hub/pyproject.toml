@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name            = "hourly-energy-demand-forecasting-hub"
+version         = "1.0.0"
+description     = "End-to-end hourly energy demand forecasting for PJM regional grids."
+readme          = "README.md"
+license         = { text = "MIT" }
+authors         = [{ name = "Sajjad Khan Yousafzai", email = "sajjad@example.com" }]
+requires-python = ">=3.10"
+keywords        = [
+    "time-series", "energy-forecasting", "pjm", "arima", "xgboost", "lstm",
+    "streamlit", "fastapi", "pandas", "statsmodels",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.scripts]
+energy-pipeline  = "scripts.run_pipeline:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "scripts*", "config*"]
+
+# ── Ruff (linter + formatter) ──────────────────────────────────────────────────
+[tool.ruff]
+target-version = "py310"
+line-length    = 100
+src            = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+ignore = ["B008", "N806", "N803", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src", "config"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ── Pytest ─────────────────────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+testpaths    = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts      = "-v --tb=short"
+markers = [
+    "integration: marks tests as integration tests (require real data)",
+    "slow: marks tests as slow-running",
+]
+filterwarnings = [
+    "ignore::FutureWarning",
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning:statsmodels",
+]
+
+# ── Coverage ───────────────────────────────────────────────────────────────────
+[tool.coverage.run]
+source  = ["src"]
+omit    = ["*/tests/*", "*/__pycache__/*", "*/conftest.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
+show_missing = true

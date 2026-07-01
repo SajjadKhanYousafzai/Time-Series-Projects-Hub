@@ -9,8 +9,9 @@ services:
       dockerfile: deployment/docker/Dockerfile.api
     command: python scripts/run_pipeline.py
     volumes:
-      - ./data:/app/data
+      - ./datasets:/app/datasets
       - ./models:/app/models
+      - ./logs:/app/logs
     environment:
       - PYTHONUNBUFFERED=1
     profiles: [pipeline]
@@ -23,19 +24,22 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./data:/app/data
+      - ./datasets:/app/datasets
       - ./models:/app/models
+      - ./logs:/app/logs
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 15s
 
   # ── Streamlit Dashboard ──────────────────────────────────────────────────────
   dashboard:
@@ -45,13 +49,20 @@ services:
     ports:
       - "8501:8501"
     volumes:
-      - ./data:/app/data
+      - ./datasets:/app/datasets
       - ./models:/app/models
     environment:
       - API_URL=http://api:8000
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   # ── Redis (API cache) ────────────────────────────────────────────────────────
   redis:
@@ -61,6 +72,11 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   redis_data:

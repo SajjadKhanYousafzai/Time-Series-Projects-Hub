@@ -19,7 +19,8 @@ COPY config/ ./config/
 COPY scripts/ ./scripts/
 
 # Create directories
-RUN mkdir -p data/raw data/processed data/interim models logs
+RUN mkdir -p datasets/raw datasets/processed datasets/interim models logs
+
 
 EXPOSE 8000
 
